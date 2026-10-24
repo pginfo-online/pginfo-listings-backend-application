@@ -21,6 +21,8 @@
     "migration:05:indexes": "node src/scripts/migrations/05_optimize_property_indexes.js --apply",
     "migration:all": "node src/scripts/migrations/01_seed_all_cities.js --apply && node src/scripts/migrations/02_normalize_property_locations.js --apply && node src/scripts/migrations/03_fix_null_island_coordinates.js --apply && node src/scripts/migrations/04_backfill_slugs_audit_and_users.js --apply && node src/scripts/migrations/05_optimize_property_indexes.js --apply",
     "seed": "node src/scripts/seed.js",
+    "export:pune": "node src/scripts/exportCityPgData.js --city=Pune",
+    "export:city": "node src/scripts/exportCityPgData.js",
     "test": "node test/management_removed.test.js",
     "test:redis": "node test/redis_upstash.test.js"
   },

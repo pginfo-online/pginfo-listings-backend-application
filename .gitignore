@@ -18,3 +18,11 @@ yarn-error.log*
 # System files
 .DS_Store
 Thumbs.db
+
+# Export files and sensitive marketing data
+*.xlsx
+*.xls
+*.csv
+data/*.xlsx
+data/*.xls
+data/exports/
