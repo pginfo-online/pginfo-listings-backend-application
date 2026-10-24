@@ -1,0 +1,174 @@
+Part 1: Step-by-Step Guide for 21.json through 100.json (Pune)
+We have built a dedicated universal import tool: 
+
+src/scripts/import/importCityDataset.js
+
+Because the import is completely idempotent, running it over the entire folder data/Pune will:
+
+Detect that listings from 1.json to 20.json (the first 200) already exist in MongoDB and leave them untouched.
+Process only the new listings from 21.json through 100.json (the remaining 800 listings).
+Provision the 649 new owner user accounts without touching existing accounts.
+Auto-curate the 70 new Pune localities into the 
+
+Area
+ collection.
+Step 1: Take a Pre-Import Baseline Snapshot (Safety First)
+Before writing new records, capture a snapshot of the current database state:
+
+bash
+node src/scripts/backup/backupDatabaseState.js
+What this does: Captures current document counts, indexes, and primary ID manifests in data/backups/latest_snapshot.json. If anything unexpected happens, you have an exact record of the baseline state.
+
+Step 2: Run a Dry-Run Simulation (Zero Risk)
+Always test first without modifying the database:
+
+bash
+node src/scripts/import/importCityDataset.js --city=Pune --dir=data/Pune --dry-run
+What this does:
+
+Scans all 100 JSON files (1.json to 100.json).
+Validates JSON syntax, envelope structure, and schema constraints.
+Maps room configurations, amenities, contact details, photos, and SEO slugs.
+Outputs a complete transformation summary showing:
+Total files scanned (100)
+Total listings to import (1,000)
+New owner profiles to create (649)
+New Pune localities to create (70)
+Validation failures (0)
+Step 3: Execute the Live Import (--apply)
+When the dry-run output is verified, execute the live database write:
+
+bash
+node src/scripts/import/importCityDataset.js --city=Pune --dir=data/Pune --apply
+What this does:
+
+Resolves City: Links Pune's cityId (6a8698dfcfb45c57ac09ad31).
+Upserts Areas: Inserts the 70 new localities under Pune with standardized URL slugs.
+Provisions Owners: Creates the 649 new owner user accounts with roles ['owner', 'pg_owner'] while honoring MongoDB sparse index rules.
+Batched Property Writes: Uses bulkWrite with { ordered: false } in chunks of 100 properties directly into the unified properties collection.
+Generates Report: Writes a detailed markdown report into data/reports/pune_import_report_<timestamp>.md.
+Step 4: Verify the Database Integrity
+Run the automated validation suite to verify the imported records:
+
+bash
+node src/scripts/import/validateImportedData.js
+Checks Performed:
+
+Properties count matches expected baseline + imported count.
+0 null-island coordinates ([0, 0]).
+0 duplicate slugs.
+All properties have valid cityId, areaId, and owner references.
+All room configurations and photo URLs are populated.
+Step 5: (Optional) Rollback Procedure
+If you ever need to cleanly reverse the import without touching pre-existing listings:
+
+bash
+# Dry run rollback:
+node src/scripts/import/rollbackPuneImport.js --dry-run
+# Live rollback:
+node src/scripts/import/rollbackPuneImport.js --apply
+Part 2: How to Store Data for ANY Other City (e.g. Mumbai, Bengaluru, Delhi)
+The import pipeline is designed to work across all 1,794 Indian cities seeded in our database.
+
+Step 1: Check City Name in the Database
+Verify that the target city exists in the cities collection:
+
+bash
+node -e "
+require('dotenv').config();
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI).then(async () => {
+  const city = await mongoose.connection.db.collection('cities').findOne({ name: { \$regex: /^mumbai$/i } });
+  console.log('City found:', city ? { id: city._id, name: city.name, state: city.state } : 'NOT FOUND');
+  await mongoose.disconnect();
+});
+"
+(Replace mumbai with any city like bangalore, hyderabad, chennai, delhi, kolkata, etc.)
+
+NOTE
+
+All 1,794 Indian cities from data/cities.json are already active in the database with their coordinates and state metadata.
+
+Step 2: Create the City Data Folder & Place JSON Files
+Create a subfolder under data/ matching the city name:
+
+bash
+mkdir -p data/Mumbai
+Place your JSON files inside (1.json, 2.json, 3.json, etc.).
+The pipeline accepts any of the following JSON formats:
+
+Standard envelope: { "success": true, "data": [{ "data": [ ...PG items... ] }] }
+Direct array: [ ...PG items... ]
+Object with array: { "properties": [ ... ] } or { "data": [ ... ] }
+Step 3: Run the Dry-Run for the New City
+Run the simulation specifying --city and --dir:
+
+bash
+node src/scripts/import/importCityDataset.js --city=Mumbai --dir=data/Mumbai --dry-run
+The script will automatically:
+
+Find Mumbai in the cities collection and retrieve its canonical cityId and state.
+Inspect all localities (e.g., Andheri West, Bandra, Powai, BKC) and identify which ones need to be added to the 
+
+Area
+ collection under Mumbai.
+Inspect owner contacts and prepare User accounts.
+Calculate pricing, room types, photos, and slugs (e.g., zolo-stay-andheri-west-mumbai-a1b2c3).
+Step 4: Apply the Import Live
+When satisfied with the dry-run summary, execute:
+
+bash
+node src/scripts/import/importCityDataset.js --city=Mumbai --dir=data/Mumbai --apply
+The data is committed directly into the unified properties collection.
+
+Step 5: Test Search Queries on the New City
+Verify that search, filtering, and geospatial queries work immediately:
+
+bash
+node -e "
+require('dotenv').config();
+const mongoose = require('mongoose');
+mongoose.connect(process.env.MONGODB_URI).then(async () => {
+  const Property = require('./src/models/Property.model');
+  const count = await Property.countDocuments({ city: { \$regex: /^mumbai$/i }, status: 'approved' });
+  console.log('Approved properties in Mumbai:', count);
+  const sample = await Property.findOne({ city: { \$regex: /^mumbai$/i } }).select('title area pricing.expectedPrice slug');
+  console.log('Sample Listing:', sample);
+  await mongoose.disconnect();
+});
+"
+Part 3: Architecture & Quality Guarantees
+Feature	How It Operates
+Idempotency	Uses MongoDB bulkWrite with updateOne and $set based on _id. Running the script multiple times updates existing documents without creating duplicates.
+Locality Management	Localities in JSON are automatically converted into 
+
+Area
+ documents linked to the parent cityId with indexed slugs.
+Owner Provisioning	Automatically creates owner accounts with roles: ['owner', 'pg_owner']. Explicitly omits empty email/phone fields so MongoDB's sparse unique indexes are never violated.
+SEO Slugs	Generates human-readable, collision-free slugs (e.g. property-name-locality-city-hexid) using 
+
+slug.util.js
+.
+Geospatial Readiness	Stores coordinates as GeoJSON Point [longitude, latitude], allowing immediate $near radius and boundary queries via the 2dsphere index.
+
+
+Status Summary:
+Folder: /Users/worknai/Documents/2030/jan/PgInfo/backend/data/Pune/
+New Files Created: 101.json to 200.json (100 files)
+Total Files in Folder: 200 files (1.json to 200.json)
+TIP
+
+The universal import pipeline (
+
+importCityDataset.js
+) automatically recognizes and safely ignores 0-byte placeholder files. Whenever you populate any of these files with listing data, you can import them at any time following the steps in 
+
+guideToUploadData
+:
+
+bash
+# 1. Dry run simulation
+node src/scripts/import/importCityDataset.js --city=Pune --dir=data/Pune --dry-run
+# 2. Live apply
+node src/scripts/import/importCityDataset.js --city=Pune --dir=data/Pune --apply
+
