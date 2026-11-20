@@ -1,3 +1,5 @@
+const crypto = require('node:crypto');
+const { Types } = require('mongoose');
 const asyncHandler = require('../utils/asyncHandler');
 const { successResponse } = require('../utils/apiResponse');
 const VisitRequest = require('../models/VisitRequest.model');
@@ -10,21 +12,34 @@ const createVisit = asyncHandler(async (req, res) => {
   const { pgId, propertyId, scheduledDate, scheduledTime, message } = req.body;
   const targetId = propertyId || pgId;
 
-  const property = await Property.findById(targetId).populate('owner');
-  if (!property || property.status !== 'approved') {
+  const property = await Property.findOne({ _id: targetId, status: 'approved' }).select('owner category');
+  if (!property?.owner) {
     return res.status(404).json({ success: false, message: 'Property not found or not available' });
   }
 
-  const visit = await VisitRequest.create({
-    property: targetId,
-    pg: targetId,
-    category: property.category || 'pg',
-    tenant: req.user._id,
-    owner: property.owner._id,
-    scheduledDate: new Date(scheduledDate),
-    scheduledTime,
-    message,
-  });
+  if (String(property.owner) === String(req.user._id)) {
+    return res.status(400).json({ success: false, message: 'You cannot request a visit to your own listing' });
+  }
+
+  const id = new Types.ObjectId(crypto.createHash('sha256')
+    .update(JSON.stringify([String(req.user._id), String(property._id), scheduledDate, scheduledTime]))
+    .digest('hex').slice(0, 24));
+  const visit = await VisitRequest.findOneAndUpdate({ _id: id, tenant: req.user._id }, {
+    $setOnInsert: {
+      property: property._id,
+      pg: property._id,
+      category: property.category || 'pg',
+      tenant: req.user._id,
+      owner: property.owner,
+      scheduledDate: new Date(scheduledDate),
+      scheduledTime,
+      message,
+    },
+  }, { upsert: true, new: true, runValidators: true });
+
+  if (visit.status === 'cancelled') {
+    return res.status(409).json({ success: false, message: 'That visit was cancelled. Choose another time.' });
+  }
 
   await visit.populate([
     { path: 'property', select: 'title name area city' },
@@ -69,19 +84,43 @@ const getPGVisits = asyncHandler(async (req, res) => {
 /**
  * @route PUT /api/v1/visit/:id/status
  */
+const allowedPrevious = {
+  confirmed: ['pending'],
+  cancelled: ['pending', 'confirmed'],
+  completed: ['confirmed'],
+};
+
 const updateVisitStatus = asyncHandler(async (req, res) => {
   const { status, ownerNote } = req.body;
-  const visit = await VisitRequest.findOne({ _id: req.params.id, owner: req.user._id });
+  const scope = { _id: req.params.id, owner: req.user._id };
+  const visit = await VisitRequest.findOneAndUpdate({
+    ...scope, status: { $in: [...allowedPrevious[status], status] },
+  }, {
+    $set: { status, ...(ownerNote !== undefined ? { ownerNote } : {}) },
+  }, { new: true, runValidators: true });
 
   if (!visit) {
-    return res.status(404).json({ success: false, message: 'Visit request not found' });
+    const exists = await VisitRequest.exists(scope);
+    return res.status(exists ? 409 : 404).json({
+      success: false, message: exists ? 'This visit cannot move to the requested status.' : 'Visit request not found.',
+    });
   }
-
-  visit.status = status;
-  if (ownerNote) visit.ownerNote = ownerNote;
-  await visit.save();
 
   successResponse(res, `Visit request ${status}`, { visit });
 });
 
-module.exports = { createVisit, getMyVisits, getPGVisits, updateVisitStatus };
+const cancelMyVisit = asyncHandler(async (req, res) => {
+  const scope = { _id: req.params.id, tenant: req.user._id };
+  const visit = await VisitRequest.findOneAndUpdate({
+    ...scope, status: { $in: ['pending', 'confirmed', 'cancelled'] },
+  }, { $set: { status: 'cancelled' } }, { new: true });
+  if (!visit) {
+    const exists = await VisitRequest.exists(scope);
+    return res.status(exists ? 409 : 404).json({
+      success: false, message: exists ? 'This visit can no longer be cancelled.' : 'Visit request not found.',
+    });
+  }
+  successResponse(res, 'Visit cancelled', { visit });
+});
+
+module.exports = { createVisit, getMyVisits, getPGVisits, updateVisitStatus, cancelMyVisit };

@@ -243,7 +243,7 @@ exports.updatePreferences = asyncHandler(async (req, res) => {
   // Merge category preferences (only update provided keys)
   if (categories && typeof categories === 'object') {
     const ALLOWED_CATEGORIES = [
-      'pg_updates', 'booking_updates', 'complaints', 'maintenance', 'tasks',
+      'pg_updates', 'booking_updates',
       'promotions', 'announcements',
       'general_alerts',
     ];

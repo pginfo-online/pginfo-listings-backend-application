@@ -83,6 +83,11 @@ const deleteProperty = asyncHandler(async (req, res) => {
  * @route GET /api/v1/properties/my
  * Owner's properties (paginated)
  */
+const getMyAnalytics = asyncHandler(async (req, res) => {
+  const categories = await propertyService.getOwnerListingAnalytics(req.user._id);
+  successResponse(res, 'Listing analytics retrieved', { categories });
+});
+
 const getMyProperties = asyncHandler(async (req, res) => {
   const { properties, pagination } = await propertyService.getMyPropertiesPaginated(
     req.user._id,
@@ -161,6 +166,7 @@ module.exports = {
   updateProperty,
   deleteProperty,
   getMyProperties,
+  getMyAnalytics,
   getAdminAnalytics,
   getAdminProperties,
   approveProperty,

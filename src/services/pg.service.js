@@ -348,16 +348,21 @@ function enrichPGPricing(pgObj, rawStoredRent = null) {
  * Get single PG by ID (increments view count)
  */
 const getPGById = async (id, user = null) => {
-  const pg = await PG.findByIdAndUpdate(
-    id,
-    { $inc: { views: 1 } },
-    { new: true }
-  ).populate('owner', 'name email phone');
+  const isAdmin = user?.role === 'admin' || user?.roles?.includes('admin');
+  const listingVisibility = user?._id
+    ? { $or: [{ status: 'approved' }, { owner: user._id }] }
+    : { status: 'approved' };
+  const pg = await PG.findOne({ _id: id, ...(isAdmin ? {} : listingVisibility) })
+    .populate('owner', 'name email phone');
 
   if (!pg) {
     const err = new Error('PG not found');
     err.statusCode = 404;
     throw err;
+  }
+
+  if (pg.status === 'approved' && String(pg.owner?._id) !== String(user?._id)) {
+    PG.updateOne({ _id: id, status: 'approved' }, { $inc: { views: 1 } }).exec().catch(() => {});
   }
 
   const rawStoredRent = pg._doc?.rent;

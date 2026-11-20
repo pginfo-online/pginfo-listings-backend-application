@@ -22,6 +22,8 @@ const propertyRoutes = require('./property.routes');
 router.use('/auth', authRoutes);
 router.use('/pg', pgRoutes);
 router.use('/properties', propertyRoutes);
+router.use('/saved-searches', require('./savedSearch.routes'));
+router.use('/rental-bookings', require('./rentalBooking.routes'));
 router.use('/lead', leadRoutes);
 router.use('/visit', visitRoutes);
 router.use('/admin', adminRoutes);
@@ -39,7 +41,7 @@ router.get('/', (req, res) => {
   res.json({
     success: true,
     message: 'PGinfo.online API v1',
-    endpoints: ['/auth', '/pg', '/lead', '/visit', '/admin', '/upload', '/meetups', '/notifications', '/cities'],
+    endpoints: ['/auth', '/properties', '/saved-searches', '/pg', '/lead', '/visit', '/admin', '/upload', '/meetups', '/notifications', '/cities', '/areas', '/location', '/meetup-categories', '/app-version'],
   });
 });
 

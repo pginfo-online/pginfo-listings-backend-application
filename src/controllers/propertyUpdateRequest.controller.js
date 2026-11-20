@@ -10,6 +10,14 @@ const getAllUpdateRequests = asyncHandler(async (req, res) => {
   paginatedResponse(res, 'Property update requests retrieved', requests, pagination);
 });
 
+const getMyUpdateRequests = asyncHandler(async (req, res) => {
+  const { requests, pagination } = await propertyUpdateRequestService.getAllUpdateRequests(
+    req.query,
+    req.user._id
+  );
+  paginatedResponse(res, 'Your property update requests retrieved', requests, pagination);
+});
+
 /**
  * @route GET /api/v1/admin/property-updates/:id
  */
@@ -54,6 +62,7 @@ const cancelUpdateRequest = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAllUpdateRequests,
+  getMyUpdateRequests,
   getUpdateRequestById,
   approveUpdateRequest,
   rejectUpdateRequest,

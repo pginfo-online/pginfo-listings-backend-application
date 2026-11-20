@@ -4,7 +4,7 @@ const Property = require('../models/Property.model');
 /**
  * Get all property update requests for admin
  */
-const getAllUpdateRequests = async (params = {}) => {
+const getAllUpdateRequests = async (params = {}, ownerId = null) => {
   const status = typeof params.status === 'string' ? params.status.trim() : '';
   const search = typeof params.search === 'string' ? params.search.trim().replace(/\s+/g, ' ') : '';
   const category = typeof params.category === 'string' ? params.category.trim() : '';
@@ -12,7 +12,7 @@ const getAllUpdateRequests = async (params = {}) => {
   const limit = Math.min(50, Math.max(1, parseInt(params.limit, 10) || 20));
   const skip = (page - 1) * limit;
 
-  const query = {};
+  const query = ownerId ? { owner: ownerId } : {};
 
   if (status && status !== 'all') {
     query.status = status;
@@ -108,7 +108,11 @@ const approveUpdateRequest = async (requestId, adminId) => {
   }
 
   // Strip immutable / read-only fields
-  const IMMUTABLE_FIELDS = ['_id', 'id', 'owner', 'createdAt', 'updatedAt', '__v'];
+  const IMMUTABLE_FIELDS = [
+    '_id', 'id', 'owner', 'createdAt', 'updatedAt', '__v', 'status', 'statusHistory',
+    'reviewedBy', 'reviewedAt', 'views', 'inquiries', 'wishlistCount', 'isFeatured',
+    'isVerified', 'verifiedAt', 'rejectionReason', 'correctionComments', 'moderationNotes',
+  ];
   const changes = { ...request.proposedChanges };
   IMMUTABLE_FIELDS.forEach((f) => delete changes[f]);
 

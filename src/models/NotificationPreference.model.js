@@ -30,15 +30,6 @@ const notificationPreferenceSchema = new mongoose.Schema(
       // Booking/visit updates
       booking_updates: { type: Boolean, default: true },
 
-      // Complaint status updates
-      complaints: { type: Boolean, default: true },
-
-      // Maintenance requests and updates
-      maintenance: { type: Boolean, default: true },
-
-      // Task assignments and reminders
-      tasks: { type: Boolean, default: true },
-
       // Promotional notifications (new PGs, featured, offers)
       promotions: { type: Boolean, default: true },
 

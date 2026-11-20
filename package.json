@@ -24,7 +24,7 @@
     "export:pune": "node src/scripts/exportCityPgData.js --city=Pune",
     "export:city": "node src/scripts/exportCityPgData.js",
     "test": "node test/management_removed.test.js",
-    "test:redis": "node test/redis_upstash.test.js"
+    "test:redis": "node test/redis.test.js"
   },
   "dependencies": {
     "axios": "^1.18.1",

@@ -107,7 +107,6 @@ const userSchema = new mongoose.Schema(
  * Fail-safe & Auto-healing Role Normalization
  * Ensures:
  * 1. Legacy role (admin/owner) is NEVER overwritten by 'tenant'
- * 2. Primary admin email (admin@pginfo.online) is automatically given 'admin' role
  * 3. roles array and role string stay 100% in sync
  */
 function normalizeUserRoles(doc) {
@@ -122,11 +121,6 @@ function normalizeUserRoles(doc) {
 
   // Drop retired hotel-owner and hot-deals roles from existing user records.
   roles = roles.filter((role) => role !== 'hotel_owner' && role !== 'hot_deals_partner');
-
-  // 3. Auto-heal primary admin account if email is admin@pginfo.online
-  if (doc.email && doc.email.toLowerCase() === 'admin@pginfo.online' && !roles.includes('admin')) {
-    roles.push('admin');
-  }
 
   // 4. Remove 'tenant' if user has higher roles
   if (roles.length > 1 && roles.includes('tenant')) {

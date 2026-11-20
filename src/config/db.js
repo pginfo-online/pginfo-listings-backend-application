@@ -41,7 +41,8 @@ const connectDB = async () => {
     serverSelectionTimeoutMS: parseInt(process.env.MONGO_SERVER_SELECTION_TIMEOUT_MS, 10) || 5000,
     socketTimeoutMS: parseInt(process.env.MONGO_SOCKET_TIMEOUT_MS, 10) || 45000,
     heartbeatFrequencyMS: 10000,
-    autoIndex: process.env.NODE_ENV !== 'production', // Disable auto-index creation in production for performance
+    autoIndex: process.env.MONGO_AUTO_INDEX === 'true',
+    autoCreate: process.env.MONGO_AUTO_CREATE === 'true',
   };
 
   let attempt = 0;

@@ -442,26 +442,7 @@ const updatePropertySchema = z.object({
   }).partial().nullable().optional(),
   residentialDetails: residentialDetailsSchema.partial().nullable().optional(),
   commercialDetails: commercialDetailsSchema.partial().nullable().optional(),
-  // Discard system / read-only fields if passed in update payload
-  _id: z.any().optional(),
-  id: z.any().optional(),
-  __v: z.any().optional(),
-  owner: z.any().optional(),
-  status: z.string().optional(),
-  createdAt: z.any().optional(),
-  updatedAt: z.any().optional(),
-  reviewedBy: z.any().optional(),
-  reviewedAt: z.any().optional(),
-  views: z.any().optional(),
-  inquiries: z.any().optional(),
-  wishlistCount: z.any().optional(),
-  isVerified: z.any().optional(),
-  verifiedAt: z.any().optional(),
-  dataQualityScore: z.any().optional(),
-  rejectionReason: z.any().optional(),
-  correctionComments: z.any().optional(),
-  moderationNotes: z.any().optional(),
-  location: z.any().optional(),
+
 });
 
 // ─── Search Query Schema ──────────────────────────────────────────────────────
@@ -470,10 +451,13 @@ const propertyQuerySchema = z.object({
   category: z.enum(['pg', 'residential_rental', 'commercial', 'all']).optional(),
   propertyType: z.string().optional(),
   purpose: z.enum(['rent', 'sale', 'all']).optional(),
-  city: z.string().optional(),
+  city: z.string().trim().max(100).optional(),
+  cityId: z.string().regex(/^[a-f0-9]{24}$/i).optional(),
+  areaId: z.string().regex(/^[a-f0-9]{24}$/i).optional(),
+  areaIds: z.string().regex(/^[a-f0-9]{24}(?:,[a-f0-9]{24}){0,9}$/i).optional(),
   area: z.string().optional(),
-  areas: z.string().optional(), // comma-separated
-  q: z.string().optional(),
+  areas: z.string().max(1000).optional(), // comma-separated
+  q: z.string().trim().max(150).optional(),
   minPrice: nullableCoercedNumber,
   maxPrice: nullableCoercedNumber,
   minRent: nullableCoercedNumber,
@@ -482,18 +466,22 @@ const propertyQuerySchema = z.object({
   commercialSubtype: z.string().optional(),
   furnishingStatus: z.string().optional(),
   sharingType: z.string().optional(),
+  pgSubtype: pgDetailsSchema.shape.propertySubtype.removeDefault().optional(),
+  foodIncluded: z.enum(['true', 'false']).optional(),
   gender: z.string().optional(),
   food: z.string().optional(),
   ac: z.string().optional(),
   isVerified: z.string().optional(),
   isFeatured: z.string().optional(),
-  lat: z.coerce.number().optional(),
-  lng: z.coerce.number().optional(),
+  lat: z.coerce.number().min(-90).max(90).optional(),
+  lng: z.coerce.number().min(-180).max(180).optional(),
   radius: z.coerce.number().optional(),
   sort: z.enum(['price_asc', 'price_desc', 'rent_asc', 'rent_desc', 'popular', 'distance', 'newest']).optional(),
   page: z.coerce.number().min(1).optional(),
   limit: z.coerce.number().min(1).max(50).optional(),
-  status: z.string().optional(),
+}).refine(({ lat, lng }) => (lat === undefined) === (lng === undefined), {
+  path: ['lat'],
+  message: 'Latitude and longitude must be provided together',
 });
 
 // ─── Moderation Schema ────────────────────────────────────────────────────────

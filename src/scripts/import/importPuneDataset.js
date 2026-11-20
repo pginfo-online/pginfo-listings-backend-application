@@ -2,7 +2,7 @@
  * Production-Grade Pune PG Dataset Import Script
  *
  * Imports and standardizes PG listing data from JSON files (1.json to 20.json)
- * into both 'properties' (unified module) and 'pgs' (legacy collection)
+ * into 'properties'. The legacy collection is written only with --include-legacy.
  * with complete idempotency, validation, owner creation, and area resolution.
  *
  * Usage:
@@ -708,12 +708,13 @@ async function runImport() {
       console.log(`   - Properties batch [${i + 1}..${Math.min(i + BATCH_SIZE, propertyOperations.length)}] written (Upserted: ${res.upsertedCount}, Modified: ${res.modifiedCount})`);
     }
 
-    // Write pgs
-    for (let i = 0; i < pgOperations.length; i += BATCH_SIZE) {
-      const chunk = pgOperations.slice(i, i + BATCH_SIZE);
-      const res = await db.collection('pgs').bulkWrite(chunk, { ordered: false });
-      pgsImported += (res.upsertedCount + res.modifiedCount);
-      console.log(`   - PGs batch [${i + 1}..${Math.min(i + BATCH_SIZE, pgOperations.length)}] written (Upserted: ${res.upsertedCount}, Modified: ${res.modifiedCount})`);
+    if (process.argv.includes('--include-legacy')) {
+      for (let i = 0; i < pgOperations.length; i += BATCH_SIZE) {
+        const chunk = pgOperations.slice(i, i + BATCH_SIZE);
+        const res = await db.collection('pgs').bulkWrite(chunk, { ordered: false });
+        pgsImported += res.upsertedCount + res.modifiedCount;
+        console.log(`   - Legacy PGs batch: ${res.upsertedCount} inserted, ${res.modifiedCount} updated`);
+      }
     }
 
     console.log(`\n✅ Database writes completed successfully!`);

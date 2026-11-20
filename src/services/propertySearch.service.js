@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const { Types } = require('mongoose');
 const Property = require('../models/Property.model');
 const Area = require('../models/Area.model');
 const City = require('../models/City.model');
@@ -32,9 +33,9 @@ const getCloudinaryThumbnail = (url, width = 640, height = 480) => {
 const getSearchCacheKey = (params) => {
   const cleanParams = {};
   const relevantKeys = [
-    'category', 'propertyType', 'city', 'area', 'areas', 'q',
+    'category', 'propertyType', 'city', 'cityId', 'area', 'areas', 'areaId', 'areaIds', 'q',
     'minPrice', 'maxPrice', 'minRent', 'maxRent', 'sort', 'page', 'limit',
-    'gender', 'food', 'ac', 'bhk', 'commercialSubtype', 'sharingType',
+    'gender', 'food', 'foodIncluded', 'ac', 'bhk', 'commercialSubtype', 'sharingType', 'pgSubtype',
     'isVerified', 'isFeatured', 'purpose', 'furnishingStatus', 'fitoutStatus'
   ];
   for (const k of relevantKeys.sort()) {
@@ -43,21 +44,14 @@ const getSearchCacheKey = (params) => {
     }
   }
   const hash = crypto.createHash('md5').update(JSON.stringify(cleanParams)).digest('hex');
-  return `search:properties:${hash}`;
+  return `search:properties:v2:${hash}`;
 };
 
 /**
  * Build MongoDB match query from multi-category search params
  */
 const buildPropertySearchQuery = (params) => {
-  const query = {};
-
-  // Status constraint — defaults to approved for public discovery
-  if (params.status && params.status !== 'all') {
-    query.status = params.status;
-  } else {
-    query.status = 'approved';
-  }
+  const query = { status: 'approved' };
 
   // Category filter / propertyType synonym
   if (params.category && params.category !== 'all') {
@@ -80,17 +74,17 @@ const buildPropertySearchQuery = (params) => {
 
   // Location filters (indexed ObjectId lookups + string fallback)
   if (params.cityId) {
-    query.cityId = params.cityId;
+    query.cityId = new Types.ObjectId(params.cityId);
   } else if (params.city && params.city.trim()) {
     query.city = safeRegex(params.city.trim());
   }
 
   if (params.areaId) {
-    query.areaId = params.areaId;
+    query.areaId = new Types.ObjectId(params.areaId);
   } else if (params.areaIds) {
     const areaIdList = String(params.areaIds).split(',').map((a) => a.trim()).filter(Boolean);
     if (areaIdList.length > 0) {
-      query.areaId = { $in: areaIdList };
+      query.areaId = { $in: areaIdList.map((id) => new Types.ObjectId(id)) };
     }
   } else if (params.areas) {
     const areaList = String(params.areas)
@@ -158,6 +152,12 @@ const buildPropertySearchQuery = (params) => {
     query['commercialDetails.fitoutStatus'] = params.fitoutStatus;
   }
 
+  if (params.pgSubtype) {
+    query['pgDetails.propertySubtype'] = params.pgSubtype;
+  }
+  if (params.foodIncluded !== undefined) {
+    query['pgDetails.foodIncluded'] = params.foodIncluded === 'true';
+  }
   if (params.gender && params.gender !== 'any') {
     query['pgDetails.gender'] = { $in: [params.gender, 'any'] };
   }
@@ -207,16 +207,16 @@ const buildPropertySort = (sort) => {
   switch (sort) {
     case 'price_asc':
     case 'rent_asc':
-      return { 'pricing.expectedPrice': 1, createdAt: -1 };
+      return { 'pricing.expectedPrice': 1, createdAt: -1, _id: -1 };
     case 'price_desc':
     case 'rent_desc':
-      return { 'pricing.expectedPrice': -1, createdAt: -1 };
+      return { 'pricing.expectedPrice': -1, createdAt: -1, _id: -1 };
     case 'popular':
-      return { views: -1, inquiries: -1 };
+      return { views: -1, inquiries: -1, _id: -1 };
     case 'newest':
-      return { createdAt: -1 };
+      return { createdAt: -1, _id: -1 };
     default:
-      return { isFeatured: -1, createdAt: -1 };
+      return { isFeatured: -1, createdAt: -1, _id: -1 };
   }
 };
 
@@ -245,7 +245,7 @@ const normalizePropertyForListing = (p) => {
     purpose: p.purpose || 'rent',
     city: p.city || '',
     area: p.area || '',
-    address: p.address || '',
+    address: [p.area, p.city].filter(Boolean).join(', '),
     landmark: p.landmark || '',
     isVerified: Boolean(p.isVerified),
     isFeatured: Boolean(p.isFeatured),
@@ -257,12 +257,8 @@ const normalizePropertyForListing = (p) => {
     owner: p.owner ? {
       _id: p.owner._id,
       name: p.owner.name,
-      phone: p.owner.phone,
-      email: p.owner.email,
       profilePhoto: p.owner.profilePhoto,
     } : null,
-    contactPhone: p.contactPhone || p.owner?.phone,
-    contactWhatsapp: p.contactWhatsapp || p.contactPhone || p.owner?.phone,
   };
 
   if (p.category === 'pg' || p.pgDetails) {
@@ -324,7 +320,7 @@ const searchProperties = async (params = {}) => {
   const skip = (page - 1) * limit;
 
   // Check Redis cache for standard searches (first 5 pages)
-  const isCacheable = !params.lat && !params.lng && page <= 5;
+  const isCacheable = params.lat == null && params.lng == null && page <= 5;
   const cacheKey = isCacheable ? getSearchCacheKey({ ...params, page, limit }) : null;
 
   if (cacheKey) {
@@ -360,7 +356,7 @@ const searchProperties = async (params = {}) => {
             query: matchQuery,
           },
         },
-        { $sort: { distance: 1 } },
+        { $sort: { distance: 1, _id: 1 } },
         {
           $facet: {
             properties: [
@@ -377,8 +373,11 @@ const searchProperties = async (params = {}) => {
               { $unwind: { path: '$owner', preserveNullAndEmptyArrays: true } },
               {
                 $project: {
-                  'owner.password': 0,
-                  'owner.tokens': 0,
+                  owner: { _id: '$owner._id', name: '$owner.name', profilePhoto: '$owner.profilePhoto' },
+                  title: 1, name: 1, area: 1, city: 1, category: 1, purpose: 1,
+                  pricing: 1, photos: 1, pgDetails: 1, residentialDetails: 1, commercialDetails: 1,
+                  isVerified: 1, isFeatured: 1, landmark: 1, amenities: 1, facilities: 1,
+                  monthlyPricing: 1, depositAmount: 1, distance: 1,
                 },
               },
             ],
@@ -421,9 +420,9 @@ const searchProperties = async (params = {}) => {
   const [rawProperties, total] = await Promise.all([
     Property.find(query)
       .select(
-        'title name area city category purpose pricing photos pgDetails residentialDetails commercialDetails isVerified isFeatured address landmark owner createdAt contactPhone contactWhatsapp monthlyPricing depositAmount'
+        'title name area city category purpose pricing photos pgDetails residentialDetails commercialDetails isVerified isFeatured landmark amenities facilities owner createdAt monthlyPricing depositAmount'
       )
-      .populate('owner', 'name email phone profilePhoto')
+      .populate('owner', 'name profilePhoto')
       .sort(sort)
       .skip(skip)
       .limit(limit)

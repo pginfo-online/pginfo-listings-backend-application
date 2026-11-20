@@ -443,11 +443,16 @@ propertySchema.index({ 'residentialDetails.bhk': 1, status: 1 });
 propertySchema.index({ 'commercialDetails.commercialSubtype': 1, status: 1 });
 propertySchema.index({ title: 'text', description: 'text', area: 'text', city: 'text', landmark: 'text' });
 
+propertySchema.index(
+  { owner: 1, createdAt: -1, _id: -1 },
+  { name: 'catalog_owner_newest' }
+);
+
 const Property = mongoose.model('Property', propertySchema);
 
 // Register 'PG' as an alias so any legacy Mongoose resolution seamlessly points to Property
 if (!mongoose.models.PG) {
-  mongoose.model('PG', propertySchema);
+  mongoose.model('PG', propertySchema, Property.collection.name);
 }
 
 module.exports = Property;

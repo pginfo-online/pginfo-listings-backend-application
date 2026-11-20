@@ -8,6 +8,7 @@ const {
   updateProperty,
   deleteProperty,
   getMyProperties,
+  getMyAnalytics,
   getAdminAnalytics,
   getAdminProperties,
   approveProperty,
@@ -26,13 +27,14 @@ const {
 } = require('../../validators/property.validator');
 
 // ─── Public routes ─────────────────────────────────────────────────────────────
-router.get('/', optionalAuth, validate(propertyQuerySchema, 'query'), getProperties);
+router.get('/', validate(propertyQuerySchema, 'query'), getProperties);
 router.get('/suggestions', getPropertySuggestions);
 
 // ─── Owner routes (MUST precede /:id) ─────────────────────────────────────────
-router.get('/my', protect, authorize('owner', 'admin'), getMyProperties);
-router.get('/my/update-requests', protect, authorize('owner', 'admin'), propertyUpdateRequestController.getAllUpdateRequests);
-router.delete('/my/update-requests/:id', protect, authorize('owner', 'admin'), propertyUpdateRequestController.cancelUpdateRequest);
+router.get('/my', protect, authorize('owner', 'pg_owner', 'admin'), getMyProperties);
+router.get('/my/analytics', protect, authorize('owner', 'pg_owner', 'admin'), getMyAnalytics);
+router.get('/my/update-requests', protect, authorize('owner', 'pg_owner', 'admin'), propertyUpdateRequestController.getMyUpdateRequests);
+router.delete('/my/update-requests/:id', protect, authorize('owner', 'pg_owner', 'admin'), propertyUpdateRequestController.cancelUpdateRequest);
 
 // ─── Admin Moderation routes ──────────────────────────────────────────────────
 router.get('/admin/analytics', protect, authorize('admin'), getAdminAnalytics);
@@ -52,8 +54,8 @@ router.put('/admin/updates/:id/reject', protect, authorize('admin'), propertyUpd
 // ─── Generic Property routes ──────────────────────────────────────────────────
 router.get('/slug/:id', optionalAuth, getPropertyById);
 router.get('/:id', optionalAuth, getPropertyById);
-router.post('/', protect, authorize('owner', 'admin', 'tenant'), validate(createPropertySchema), createProperty);
-router.put('/:id', protect, authorize('owner', 'admin'), validate(updatePropertySchema), updateProperty);
-router.delete('/:id', protect, authorize('owner', 'admin'), deleteProperty);
+router.post('/', protect, authorize('owner', 'pg_owner', 'admin', 'tenant'), validate(createPropertySchema), createProperty);
+router.put('/:id', protect, authorize('owner', 'pg_owner', 'admin'), validate(updatePropertySchema), updateProperty);
+router.delete('/:id', protect, authorize('owner', 'pg_owner', 'admin'), deleteProperty);
 
 module.exports = router;

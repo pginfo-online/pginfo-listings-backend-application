@@ -80,7 +80,7 @@ class TokenService {
       const stored = await redisCache.get(cacheKey);
       return !!stored;
     } catch (_) {
-      return true; // Fallback if Redis is unreachable
+      return false;
     }
   }
 

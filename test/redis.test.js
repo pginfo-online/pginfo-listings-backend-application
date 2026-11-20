@@ -15,22 +15,35 @@ const {
 
 const redisCache = require('../src/services/redisCache.service');
 
+function withRedisUrl(url, callback) {
+  const original = process.env.REDIS_URL;
+  process.env.REDIS_URL = url;
+  try {
+    return callback();
+  } finally {
+    if (original === undefined) delete process.env.REDIS_URL;
+    else process.env.REDIS_URL = original;
+  }
+}
+
+const tlsFixture = 'rediss://default:test-password@cache.example.test:6379';
+
 async function runTestSuite() {
-  console.log('🧪 Starting Upstash Redis Production Test Suite...\n');
+  console.log('🧪 Starting Redis and Valkey Production Test Suite...\n');
 
   // ─── Test 1: Configuration Parsing & Sanitization ─────────────────────────
   console.log('▶ Test 1: URL Parsing and Credential Sanitization');
   {
-    const rawUrl = 'rediss://default:superSecretPassword123@my-host.upstash.io:6379';
+    const rawUrl = 'rediss://default:superSecretPassword123@my-host.example.test:6379';
     const sanitized = sanitizeRedisUrl(rawUrl);
     assert(!sanitized.includes('superSecretPassword123'), 'Sanitized URL must NEVER contain password');
-    assert(sanitized.includes('my-host.upstash.io'), 'Sanitized URL should retain hostname');
+    assert(sanitized.includes('my-host.example.test'), 'Sanitized URL should retain hostname');
 
-    const errorMsg = 'Error connecting to rediss://default:superSecretPassword123@my-host.upstash.io:6379: ETIMEDOUT';
+    const errorMsg = 'Error connecting to rediss://default:superSecretPassword123@my-host.example.test:6379: ETIMEDOUT';
     const sanitizedMsg = sanitizeErrorMessage(errorMsg);
     assert(!sanitizedMsg.includes('superSecretPassword123'), 'Sanitized error message must not leak password');
 
-    const parsed = parseRedisConfig();
+    const parsed = withRedisUrl(tlsFixture, parseRedisConfig);
     assert(parsed !== null, 'parseRedisConfig must return parsed object when REDIS_URL is set');
     assert.strictEqual(parsed.protocol, 'rediss:', 'Protocol must be rediss:');
     assert.strictEqual(parsed.isTls, true, 'isTls must be true for rediss:');
@@ -53,7 +66,7 @@ async function runTestSuite() {
       }, /Missing REDIS_URL environment variable/);
 
       // Test insecure protocol (redis://) in production
-      process.env.REDIS_URL = 'redis://default:pass@endpoint.upstash.io:6379';
+      process.env.REDIS_URL = 'redis://default:pass@endpoint.example.test:6379';
       assert.throws(() => {
         validateRedisConfig();
       }, /Insecure protocol/);
@@ -65,9 +78,9 @@ async function runTestSuite() {
       }, /Localhost \/ 127.0.0.1 is not permitted/);
 
       // Test valid rediss:// in production
-      process.env.REDIS_URL = originalUrl;
+      process.env.REDIS_URL = tlsFixture;
       const validProd = validateRedisConfig();
-      assert.strictEqual(validProd, true, 'Valid Upstash rediss:// URL must pass in production');
+      assert.strictEqual(validProd, true, 'Valid Redis rediss:// URL must pass in production');
     } finally {
       process.env.NODE_ENV = originalEnv;
       process.env.REDIS_URL = originalUrl;
@@ -78,7 +91,7 @@ async function runTestSuite() {
   // ─── Test 3: Client Options ──────────────────────────────────────────────
   console.log('▶ Test 3: Redis Client Options');
   {
-    const options = createClientOptions();
+    const options = withRedisUrl(tlsFixture, createClientOptions);
     assert.strictEqual(options.enableReadyCheck, true, 'enableReadyCheck must be true for production');
     assert.strictEqual(options.lazyConnect, true, 'lazyConnect must be true for non-blocking startup');
     assert(options.tls && options.tls.servername, 'TLS SNI servername must be configured');
@@ -106,7 +119,7 @@ async function runTestSuite() {
   console.log('▶ Test 5: Live PING Health Check');
   {
     const isHealthy = await isRedisHealthy(4000);
-    assert.strictEqual(isHealthy, true, 'isRedisHealthy must return true with configured Upstash credentials');
+    assert.strictEqual(isHealthy, true, 'isRedisHealthy must return true with configured Redis credentials');
     console.log('  ✅ Live PING -> PONG health check passed');
   }
 

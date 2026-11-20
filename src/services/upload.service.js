@@ -16,7 +16,14 @@ const uploadImages = async (files, folder = 'pginfo/pg-photos') => {
     };
   });
 
-  return Promise.all(uploads);
+  const results = await Promise.allSettled(uploads);
+  const failed = results.find((result) => result.status === 'rejected');
+  const completed = results.flatMap((result) => result.status === 'fulfilled' ? [result.value] : []);
+  if (failed) {
+    await Promise.allSettled(completed.map(({ publicId }) => deleteFromCloudinary(publicId, 'image')));
+    throw failed.reason;
+  }
+  return completed;
 };
 
 /**

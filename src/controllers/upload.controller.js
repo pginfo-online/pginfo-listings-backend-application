@@ -5,18 +5,14 @@ const Property = require('../models/Property.model');
 
 const ALLOWED_VIDEO_TYPES = ['video/mp4', 'video/webm', 'video/quicktime', 'video/x-msvideo'];
 const MAX_VIDEO_SIZE_BYTES = 50 * 1024 * 1024; // 50 MB
-const MAX_VIDEOS_PER_PROPERTY = 1;
 const MAX_PHOTOS_PER_PROPERTY = 20;
 
 /**
  * Helper to find entity in Property
  */
-const findPropertyOrPG = async (id, user) => {
+const findOwnedProperty = (id, user) => {
   const query = user.role === 'admin' ? { _id: id } : { _id: id, owner: user._id };
-  const property = await Property.findOne(query);
-  if (property) return { doc: property, model: 'Property' };
-
-  return { doc: null, model: null };
+  return Property.findOne(query);
 };
 
 /**
@@ -30,12 +26,9 @@ const uploadImages = asyncHandler(async (req, res) => {
 
   const targetId = req.body.propertyId || req.body.pgId;
   let targetDoc = null;
-  let targetModel = null;
 
   if (targetId) {
-    const found = await findPropertyOrPG(targetId, req.user);
-    targetDoc = found.doc;
-    targetModel = found.model;
+    targetDoc = await findOwnedProperty(targetId, req.user);
 
     if (!targetDoc) {
       return res.status(404).json({ success: false, message: 'Property not found or unauthorized' });
@@ -70,17 +63,6 @@ const uploadImages = asyncHandler(async (req, res) => {
     existingPhotos.push(...images);
     targetDoc.photos = existingPhotos.slice(0, MAX_PHOTOS_PER_PROPERTY);
     await targetDoc.save();
-
-    // If target was Property, keep PG in sync if exists
-    if (targetModel === 'Property') {
-      try {
-        await PG.findByIdAndUpdate(targetId, { $set: { photos: targetDoc.photos } });
-      } catch (e) {}
-    } else {
-      try {
-        await Property.findByIdAndUpdate(targetId, { $set: { photos: targetDoc.photos } });
-      } catch (e) {}
-    }
 
     return successResponse(
       res,
@@ -123,21 +105,12 @@ const uploadVideo = asyncHandler(async (req, res) => {
   const { title } = req.body;
 
   if (targetId) {
-    const { doc: targetDoc, model } = await findPropertyOrPG(targetId, req.user);
+    const targetDoc = await findOwnedProperty(targetId, req.user);
     if (!targetDoc) {
       return res.status(404).json({ success: false, message: 'Property not found or not authorized' });
     }
 
-    // If an existing video exists, replace it
-    if (targetDoc.videos && targetDoc.videos.length >= MAX_VIDEOS_PER_PROPERTY) {
-      const oldVideo = targetDoc.videos[0];
-      if (oldVideo?.publicId) {
-        uploadService.deleteAssets([oldVideo.publicId], 'video').catch((err) => {
-          console.warn('Could not remove old video from Cloudinary:', err.message);
-        });
-      }
-      targetDoc.videos = [];
-    }
+    const previousVideo = targetDoc.videos?.[0];
 
     const videoData = await uploadService.uploadVideo(req.file, 'pginfo/property-videos');
     const videoEntry = {
@@ -149,6 +122,12 @@ const uploadVideo = asyncHandler(async (req, res) => {
 
     targetDoc.videos = [videoEntry];
     await targetDoc.save();
+
+    if (previousVideo?.publicId) {
+      uploadService.deleteAssets([previousVideo.publicId], 'video').catch((error) => {
+        console.warn('Could not remove old video from Cloudinary:', error.message);
+      });
+    }
 
     const savedVideo = targetDoc.videos[0];
     return successResponse(res, 'Walkthrough video uploaded successfully', { video: savedVideo }, 201);
@@ -171,33 +150,26 @@ const deleteImage = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: 'publicId or url is required' });
   }
 
-  const { doc: targetDoc, model } = await findPropertyOrPG(targetId, req.user);
+  const targetDoc = await findOwnedProperty(targetId, req.user);
   if (!targetDoc) return res.status(404).json({ success: false, message: 'Property not found' });
 
-  if (publicId) {
-    try {
-      await uploadService.deleteAssets([publicId], 'image');
-    } catch (cloudErr) {
-      console.warn('Cloudinary delete image warning:', cloudErr.message);
-    }
-  }
+  const photo = targetDoc.photos.find((entry) => (
+    (!publicId || entry.publicId === publicId) && (!url || entry.url === url)
+  ));
+  if (!photo) return res.status(404).json({ success: false, message: 'Image not attached to this listing' });
 
-  const pullCondition = publicId && url
-    ? { $or: [{ publicId }, { url }] }
-    : publicId
-    ? { publicId }
-    : { url };
-
+  const pullCondition = photo._id ? { _id: photo._id } : { url: photo.url };
   const updatedDoc = await Property.findByIdAndUpdate(
     targetId,
     { $pull: { photos: pullCondition } },
     { new: true }
   );
 
-  // Keep PG in sync if it exists
-  try {
-    await PG.findByIdAndUpdate(targetId, { $pull: { photos: pullCondition } });
-  } catch (e) {}
+  if (updatedDoc && photo.publicId) {
+    uploadService.deleteAssets([photo.publicId], 'image').catch((error) => {
+      console.warn('Cloudinary delete image warning:', error.message);
+    });
+  }
 
   const finalDoc = updatedDoc || targetDoc;
 
@@ -207,12 +179,6 @@ const deleteImage = asyncHandler(async (req, res) => {
       { _id: targetId, 'photos.0': { $exists: true } },
       { $set: { 'photos.0.isMain': true } }
     );
-    try {
-      await PG.updateOne(
-        { _id: targetId, 'photos.0': { $exists: true } },
-        { $set: { 'photos.0.isMain': true } }
-      );
-    } catch (e) {}
     finalDoc.photos[0].isMain = true;
   }
 
@@ -231,21 +197,24 @@ const deleteVideo = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: 'publicId is required' });
   }
 
-  const { doc: targetDoc, model } = await findPropertyOrPG(targetId, req.user);
+  const targetDoc = await findOwnedProperty(targetId, req.user);
   if (!targetDoc) return res.status(404).json({ success: false, message: 'Property not found' });
 
-  try {
-    await uploadService.deleteAssets([publicId], 'video');
-  } catch (cloudErr) {
-    console.warn('Cloudinary delete video warning:', cloudErr.message);
+  if (!targetDoc.videos.some((video) => video.publicId === publicId)) {
+    return res.status(404).json({ success: false, message: 'Video not attached to this listing' });
   }
 
-  const Model = model === 'Property' ? Property : PG;
-  const updatedDoc = await Model.findByIdAndUpdate(
+  const updatedDoc = await Property.findByIdAndUpdate(
     targetId,
     { $pull: { videos: { publicId } } },
     { new: true }
   );
+
+  if (updatedDoc) {
+    uploadService.deleteAssets([publicId], 'video').catch((error) => {
+      console.warn('Cloudinary delete video warning:', error.message);
+    });
+  }
 
   successResponse(res, 'Video deleted', { videos: updatedDoc ? updatedDoc.videos : [] });
 });

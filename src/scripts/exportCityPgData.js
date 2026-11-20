@@ -327,7 +327,7 @@ async function exportCityPgData(options = {}) {
   const cityKey = cityName.toLowerCase();
   const statusFilter = (options.status || 'all').trim().toLowerCase();
   const areaFilter = (options.area || '').trim();
-  const includeLegacy = options.includeLegacy !== false;
+  const includeLegacy = options.includeLegacy === true;
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   const defaultFileName = `${cityName.replace(/\s+/g, '_')}_PG_Data_Export_${timestamp}.xlsx`;
@@ -897,7 +897,7 @@ function parseCliArgs() {
     city: 'Pune',
     status: 'all',
     area: '',
-    includeLegacy: true,
+    includeLegacy: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -911,7 +911,7 @@ Options:
   --output=<path>      Custom path for the generated Excel file.
   --status=<status>    Filter by property status (all, approved, pending, submitted). Default: all
   --area=<name>        Filter by specific area / locality within the city (case-insensitive substring)
-  --no-legacy          Exclude legacy 'pgs' collection; export only from unified 'properties'
+  --include-legacy     Include legacy 'pgs' for historical audit exports (default: unified properties only)
   --help, -h           Show this help message and exit
 
 Examples:
@@ -938,6 +938,8 @@ Examples:
       options.area = arg.split('=')[1];
     } else if (arg === '--area' && args[i + 1]) {
       options.area = args[++i];
+    } else if (arg === '--include-legacy') {
+      options.includeLegacy = true;
     } else if (arg === '--no-legacy') {
       options.includeLegacy = false;
     }

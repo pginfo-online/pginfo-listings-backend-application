@@ -64,9 +64,15 @@ const errorHandler = (err, req, res, next) => {
 
     // Multer file upload errors
     else if (err.code === 'LIMIT_FILE_SIZE') {
+      statusCode = 413;
+      errorCode = ErrorCodes.BAD_REQUEST;
+      message = 'Maximum file size is 8 MB per photo or 50 MB per video.';
+    }
+
+    else if (err.name === 'MulterError') {
       statusCode = HttpStatus.BAD_REQUEST;
       errorCode = ErrorCodes.BAD_REQUEST;
-      message = 'File size exceeds maximum allowed limit (10MB)';
+      message = 'The upload contains too many files or invalid form fields.';
     }
 
     const requestId = req.id || req.headers['x-request-id'] || 'n/a';

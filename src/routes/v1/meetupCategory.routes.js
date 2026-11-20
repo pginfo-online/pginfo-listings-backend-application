@@ -12,7 +12,7 @@ const {
   deleteCategory,
 } = require('../../controllers/meetupCategory.controller');
 const { protect, authorize } = require('../../middlewares/auth.middleware');
-const upload = require('../../middlewares/upload.middleware');
+const { imageUpload: upload } = require('../../middlewares/upload.middleware');
 
 // ─── Public ───────────────────────────────────────────────────────────────────
 router.get('/', getCategories);

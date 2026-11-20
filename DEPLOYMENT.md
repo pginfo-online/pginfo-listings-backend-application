@@ -87,3 +87,25 @@ Scroll down to the **Environment Variables** section on the Render Web Service c
 - **Database Access Rules**: In MongoDB Atlas, you must allow connection requests. Under **Network Access**, add `0.0.0.0/0` (allow access from anywhere) because Render's outbound IP addresses are dynamic. Alternatively, you can use a static outbound IP proxy service if strict IP security is needed.
 - **CORS Protection**: Double check that `CLIENT_URL` is configured correctly. Requests from unauthorized origins will be blocked with a CORS error.
 - **Spin-up Delay (Free Tier)**: If you use the Free instance tier on Render, the container goes to sleep after 15 minutes of inactivity. The next request triggers a cold-start, taking 50-90 seconds. To avoid this, consider upgrading to the **Starter** tier ($7/month) or using a ping service (like UptimeRobot) to keep it awake.
+
+## Discovery and rental rollout
+
+Apply the additive indexes with `node src/scripts/migrations/07_add_discovery_workflow_indexes.js --apply` against the target MongoDB database. Run the same command without `--apply` to confirm the index state. Discovery and rental request APIs can run before payment activation.
+
+Set `ENABLE_SAVED_SEARCH_ALERTS=true` for the worker and keep `ENABLE_SCHEDULERS` enabled. Saved searches produce daily in-app inbox digests from newly approved listings. Monitor worker errors and due-search backlog.
+
+### Razorpay checkout
+
+Keep `ENABLE_RENTAL_PAYMENTS=false` until the staging Test Mode checkout, signed webhook, and settlement reconciliation pass. Install rotated Razorpay API and webhook credentials through the deployment secret store.
+
+Register `POST /api/v1/payments/razorpay/webhook` on the target HTTPS hostname for `payment_link.paid` and `payment_link.expired`. PGInfo checks the raw-body signature, payment capture, currency, amount, and booking reference. Configure Test Mode to verify valid and mismatched webhook payloads and safe retries before Live Mode.
+
+PGInfo receives the funds in its Razorpay merchant account. The admin unsettled endpoint lists captured payments. After finance verifies the external owner transfer, record its unique reference and full amount in paise through `POST /api/v1/rental-bookings/admin/:id/settlement`. The endpoint records reconciliation. It does not issue transfers or refunds. Confirm the production refund and payout procedures before enabling checkout.
+
+The legacy archive tool streams a MongoDB snapshot to an authenticated encrypted file and verifies its record counts. Store the encryption key separately in an approved recovery store. Live collection retirement requires restore verification and a separate maintenance decision.
+
+### Legacy collection retirement
+
+The unified `properties` collection is authoritative for PG listings. Standard city exports and Pune imports use it by default. Keep historical repair and import jobs that explicitly target the legacy collections out of the cutover.
+
+Before an approved live cutover, verify the archive with `archiveRetiredCollections.js --test-restore` against an empty, disposable MongoDB on loopback. The drill compares record contents and counts and verifies recreated index names. Confirm that the current production deployment and any external jobs have no legacy reads or writes, and refresh and verify the archive if source data changes.

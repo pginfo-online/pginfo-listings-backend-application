@@ -478,7 +478,6 @@ const createProperty = async (ownerId, data) => {
   // 7. Auto-upgrade user role: add 'owner' if tenant
   await User.findByIdAndUpdate(ownerId, {
     $addToSet: { roles: 'owner' },
-    $set: { role: 'owner' },
   });
 
   return property;
@@ -497,15 +496,50 @@ const updateProperty = async (propertyId, userId, data, userRole = 'owner') => {
     throw err;
   }
 
+  const existing = property.toObject();
+  for (const field of ['pricing', 'pgDetails', 'residentialDetails', 'commercialDetails']) {
+    if (data[field] && existing[field]) {
+      data[field] = { ...existing[field], ...data[field] };
+    }
+  }
   sanitizePropertyPayload(data);
   removeInactiveCategoryDetails(data, data.category || property.category, data.purpose || property.purpose);
-  await canonicalizePropertyCity(data);
+
+  const addressChanged = ['city', 'area', 'address'].some(
+    (field) => data[field] !== undefined && data[field] !== property[field]
+  );
+  if (addressChanged || data.cityId) {
+    const location = {
+      city: data.city ?? property.city,
+      area: data.area ?? property.area,
+      cityId: data.cityId,
+    };
+    await canonicalizePropertyLocation(location);
+    Object.assign(data, { cityId: location.cityId ?? null, areaId: location.areaId ?? null }, location);
+  }
+  if (addressChanged || data.latitude != null || data.longitude != null) {
+    const { geocodeAddress } = require('../utils/geocoder');
+    const coordinates = data.latitude != null && data.longitude != null
+      ? { latitude: data.latitude, longitude: data.longitude, placeId: data.googlePlaceId }
+      : await geocodeAddress(`${data.address ?? property.address}, ${data.area ?? property.area}, ${data.city ?? property.city}`);
+    data.latitude = coordinates?.latitude ?? null;
+    data.longitude = coordinates?.longitude ?? null;
+    data.location = coordinates
+      ? { type: 'Point', coordinates: [coordinates.longitude, coordinates.latitude] }
+      : null;
+    data.googlePlaceId = coordinates?.placeId ?? null;
+    if (addressChanged) {
+      data.fullAddress = coordinates?.fullAddress ?? null;
+      data.mapsLink = data.mapsLink ?? null;
+    }
+  }
 
   // Direct update for admin, unapproved drafts, submitted, pending_review, correction_required, or rejected listings
   if (
     userRole === 'admin' ||
     property.status === 'draft' ||
     property.status === 'submitted' ||
+    property.status === 'pending' ||
     property.status === 'pending_review' ||
     property.status === 'correction_required' ||
     property.status === 'rejected'
@@ -592,45 +626,19 @@ const getPropertyById = async (idOrSlug, user = null) => {
   const isObjectId = mongoose.Types.ObjectId.isValid(idOrSlug);
   const filter = isObjectId ? { _id: idOrSlug } : { slug: idOrSlug };
 
-  let property = await Property.findOne(filter)
+  const isAdmin = user?.role === 'admin' || user?.roles?.includes('admin');
+  const listingVisibility = user?._id
+    ? { $or: [{ status: 'approved' }, { owner: user._id }] }
+    : { status: 'approved' };
+
+  const property = await Property.findOne(isAdmin ? filter : { ...filter, ...listingVisibility })
     .populate('owner', 'name email phone profilePhoto')
     .populate('cityId', 'name slug state')
     .populate('areaId', 'name slug');
 
-  if (property) {
+  if (property?.status === 'approved' && String(property.owner?._id) !== String(user?._id)) {
     // Fire-and-forget asynchronous view count increment
-    Property.findByIdAndUpdate(property._id, { $inc: { views: 1 } }).exec().catch(() => {});
-  }
-
-  if (!property && isObjectId) {
-    const legacyPg = await PG.findById(idOrSlug).populate('owner', 'name email phone profilePhoto');
-    if (legacyPg) {
-      PG.findByIdAndUpdate(idOrSlug, { $inc: { views: 1 } }).exec().catch(() => {});
-      const pgObj = legacyPg.toObject();
-      property = {
-        toObject: () => ({
-          ...pgObj,
-          category: 'pg',
-          purpose: 'rent',
-          title: pgObj.name,
-          photos: pgObj.photos || [],
-          pricing: {
-            expectedPrice: pgObj.minRent || pgObj.rent?.single || 0,
-            securityDeposit: pgObj.securityDeposit || 0,
-          },
-          pgDetails: {
-            gender: pgObj.gender,
-            roomConfigs: pgObj.roomConfigs || [],
-            food: pgObj.food,
-            foodIncluded: pgObj.foodIncluded,
-            foodInfo: pgObj.foodInfo,
-            rules: pgObj.rules,
-            totalRooms: pgObj.totalRooms,
-            floors: pgObj.floors,
-          },
-        }),
-      };
-    }
+    Property.updateOne({ _id: property._id, status: 'approved' }, { $inc: { views: 1 } }).exec().catch(() => {});
   }
 
   if (!property) {
@@ -688,6 +696,14 @@ const getPropertyById = async (idOrSlug, user = null) => {
     propObj.amenities = propObj.amenities || propObj.facilities || [];
   }
 
+  if (!isAdmin && (!user || String(propObj.owner?._id) !== String(user._id))) {
+    delete propObj.statusHistory;
+    delete propObj.moderationNotes;
+    delete propObj.reviewedBy;
+    delete propObj.rejectionReason;
+    delete propObj.correctionComments;
+  }
+
   if (isGuest) {
     if (propObj.contactPhone) {
       const raw = propObj.contactPhone.replace(/\D/g, '');
@@ -725,7 +741,9 @@ const getMyPropertiesPaginated = async (ownerId, params = {}) => {
   }
 
   if (params.status && params.status !== 'all') {
-    query.status = params.status;
+    query.status = params.status === 'pending'
+      ? { $in: ['pending', 'submitted', 'pending_review', 'correction_required'] }
+      : params.status;
   }
 
   if (params.q && params.q.trim()) {
@@ -742,7 +760,7 @@ const getMyPropertiesPaginated = async (ownerId, params = {}) => {
   }
 
   const [properties, total] = await Promise.all([
-    Property.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+    Property.find(query).sort({ createdAt: -1, _id: -1 }).skip(skip).limit(limit).lean(),
     Property.countDocuments(query),
   ]);
 
@@ -759,7 +777,21 @@ const getMyPropertiesPaginated = async (ownerId, params = {}) => {
   };
 };
 
+const getOwnerListingAnalytics = (ownerId) => Property.aggregate([
+  { $match: { owner: ownerId } },
+  { $group: {
+    _id: '$category',
+    listings: { $sum: 1 },
+    published: { $sum: { $cond: [{ $eq: ['$status', 'approved'] }, 1, 0] } },
+    views: { $sum: '$views' },
+    enquiries: { $sum: '$inquiries' },
+  } },
+  { $sort: { _id: 1 } },
+  { $project: { _id: 0, category: '$_id', listings: 1, published: 1, views: 1, enquiries: 1 } },
+]);
+
 module.exports = {
+  getOwnerListingAnalytics,
   createProperty,
   updateProperty,
   deleteProperty,

@@ -10,7 +10,7 @@ const {
   toggleCityStatus,
 } = require('../../controllers/city.controller');
 const { protect, authorize } = require('../../middlewares/auth.middleware');
-const upload = require('../../middlewares/upload.middleware');
+const { imageUpload: upload } = require('../../middlewares/upload.middleware');
 
 // ─── Public ───────────────────────────────────────────────────────────────────
 // GET /api/v1/cities — mobile city selector, returns active cities only

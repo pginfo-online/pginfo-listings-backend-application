@@ -16,15 +16,15 @@ router.get('/suggestions', getSuggestions);
 // ─── Owner/Admin-specific routes ───────────────────────────────────────────────
 // CRITICAL: These MUST be declared before /:id to prevent Express
 // from treating "my" as a MongoDB ObjectId (which causes a CastError).
-router.get('/my', protect, authorize('owner', 'admin'), getMyPGs);
-router.get('/my/paginated', protect, authorize('owner', 'admin'), getMyPGsPaginated);
-router.get('/my/update-requests', protect, authorize('owner', 'admin'), getMyUpdateRequests);
-router.delete('/my/update-requests/:id', protect, authorize('owner', 'admin'), cancelUpdateRequest);
+router.get('/my', protect, authorize('owner', 'pg_owner', 'admin'), getMyPGs);
+router.get('/my/paginated', protect, authorize('owner', 'pg_owner', 'admin'), getMyPGsPaginated);
+router.get('/my/update-requests', protect, authorize('owner', 'pg_owner', 'admin'), getMyUpdateRequests);
+router.delete('/my/update-requests/:id', protect, authorize('owner', 'pg_owner', 'admin'), cancelUpdateRequest);
 
 // ─── Generic PG routes (must come AFTER specific named paths) ──────────────────
 router.get('/:id([0-9a-fA-F]{24})', optionalAuth, getPGById);
-router.post('/', protect, authorize('owner', 'admin', 'tenant'), validate(createPGSchema), createPG);
-router.put('/:id', protect, authorize('owner', 'admin'), validate(updatePGSchema), updatePG);
-router.delete('/:id', protect, authorize('owner', 'admin'), deletePG);
+router.post('/', protect, authorize('owner', 'pg_owner', 'admin', 'tenant'), validate(createPGSchema), createPG);
+router.put('/:id', protect, authorize('owner', 'pg_owner', 'admin'), validate(updatePGSchema), updatePG);
+router.delete('/:id', protect, authorize('owner', 'pg_owner', 'admin'), deletePG);
 
 module.exports = router;

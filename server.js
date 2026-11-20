@@ -13,6 +13,7 @@ const { validateRedisConfig, isRedisHealthy, disconnectRedis } = require('./src/
 const v1Routes = require('./src/routes/v1/index');
 const errorMiddleware = require('./src/middlewares/error.middleware');
 const { logger } = require('./src/utils/logger');
+const { startSavedSearchAlerts } = require('./src/services/notification/savedSearch.scheduler');
 const { startScheduler } = require('./src/services/notification/notification.scheduler');
 const { startExportScheduler } = require('./src/services/export.scheduler');
 
@@ -127,6 +128,8 @@ const limiter = rateLimit({
 app.use('/api/', limiter);
 
 // ─── Body Parsing ─────────────────────────────────────────────────────────────
+app.post('/api/v1/payments/razorpay/webhook', express.raw({ type: 'application/json', limit: '128kb' }),
+  require('./src/controllers/rentalPayment.controller').razorpayWebhook);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -230,6 +233,7 @@ const startServer = async () => {
     const schedulersEnabled = process.env.ENABLE_SCHEDULERS !== 'false';
 
     if (isPrimaryInstance && schedulersEnabled) {
+      if (process.env.ENABLE_SAVED_SEARCH_ALERTS === 'true') startSavedSearchAlerts();
       logger.info('🕒 Starting background schedulers on primary instance...');
      // startScheduler();
     //  startExportScheduler();

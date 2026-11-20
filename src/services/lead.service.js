@@ -6,10 +6,16 @@ const Property = require('../models/Property.model');
  */
 const addLead = async (pgId, tenantId, type, message) => {
   // Check property exists
-  const property = await Property.findById(pgId);
+  const property = await Property.findOne({ _id: pgId, status: 'approved' }).select('category owner');
   if (!property) {
     const err = new Error('Property not found');
     err.statusCode = 404;
+    throw err;
+  }
+
+  if (String(property.owner) === String(tenantId)) {
+    const err = new Error('You cannot enquire about or save your own listing');
+    err.statusCode = 400;
     throw err;
   }
 

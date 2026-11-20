@@ -39,7 +39,13 @@ const sanitizeErrorMessage = (msg) => {
     .replace(/(?:password|token|secret)[:=]\s*([^\s&]+)/gi, '$1=******');
 };
 
-const getRedisUrl = () => (process.env.REDIS_URL ? process.env.REDIS_URL.trim() : '');
+const getRedisUrl = () => {
+  const url = process.env.REDIS_URL?.trim() || '';
+  if (process.env.NODE_ENV !== 'production' && /^(localhost|127\.0\.0\.1):\d+$/.test(url)) {
+    return `redis://${url}`;
+  }
+  return url;
+};
 const getRedisDb = () => Number(process.env.REDIS_DB !== undefined ? process.env.REDIS_DB : 0);
 const REDIS_KEY_PREFIX = process.env.REDIS_KEY_PREFIX || 'pgm:';
 
@@ -78,7 +84,7 @@ const validateRedisConfig = () => {
   const redisUrl = getRedisUrl();
 
   if (!redisUrl) {
-    const msg = '[Redis] Missing REDIS_URL environment variable. Upstash rediss:// URL is required.';
+    const msg = '[Redis] Missing REDIS_URL environment variable. A Redis or Valkey TLS URL is required.';
     if (isProduction) {
       logger.error(`❌ ${msg}`);
       throw new Error(msg);
@@ -103,7 +109,7 @@ const validateRedisConfig = () => {
 
   // Ensure TLS is used (rediss://)
   if (parsed.protocol !== 'rediss:') {
-    const msg = `[Redis] Insecure protocol "${parsed.protocol}" in REDIS_URL. Upstash requires TLS ("rediss://").`;
+    const msg = `[Redis] Insecure protocol "${parsed.protocol}" in REDIS_URL. Production requires TLS ("rediss://").`;
     if (isProduction) {
       logger.error(`❌ ${msg}`);
       throw new Error(msg);
@@ -122,7 +128,7 @@ const validateRedisConfig = () => {
 };
 
 /**
- * Build production-grade ioredis options for Upstash
+ * Build production-grade ioredis options for Redis or Valkey
  * @param {object} customOptions
  * @returns {object}
  */
@@ -131,7 +137,7 @@ const createClientOptions = (customOptions = {}) => {
   const hostname = parsed?.hostname;
 
   return {
-    // Upstash TLS settings with Server Name Indication (SNI)
+    // TLS settings with Server Name Indication (SNI)
     tls: (parsed?.isTls || !parsed)
       ? {
           servername: hostname,
@@ -144,11 +150,9 @@ const createClientOptions = (customOptions = {}) => {
     keepAlive: 10000,
     lazyConnect: true,
     enableReadyCheck: true,
-    // Exponential backoff retry strategy with a maximum of 10 attempts
-    retryStrategy: (times) => {
-      if (times > 10) return null;
-      return Math.min(times * 100, 3000);
-    },
+    enableOfflineQueue: false,
+    maxRetriesPerRequest: 1,
+    retryStrategy: (times) => Math.min(100 * 2 ** Math.min(times - 1, 6), 5000) + Math.floor(Math.random() * 100),
 
 
     reconnectOnError: (err) => {
@@ -281,19 +285,24 @@ const isRedisHealthy = async (timeoutMs = 3000) => {
     const redis = getRedisConnection();
     if (!redis) return false;
 
-    // If still in wait status, kick off connection
-    if (redis.status === 'wait') {
-      redis.connect().catch(() => {});
-    }
-
     let timer;
+    let onReady;
+    const ping = async () => {
+      if (redis.status !== 'ready') {
+        await new Promise((resolve) => {
+          onReady = resolve;
+          redis.once('ready', onReady);
+        });
+      }
+      return redis.ping();
+    };
     const timeoutPromise = new Promise((_, reject) => {
       timer = setTimeout(() => reject(new Error('timeout')), timeoutMs);
     });
 
-    const pingPromise = redis.ping();
-    const result = await Promise.race([pingPromise, timeoutPromise]).finally(() => {
-      if (timer) clearTimeout(timer);
+    const result = await Promise.race([ping(), timeoutPromise]).finally(() => {
+      clearTimeout(timer);
+      if (onReady) redis.removeListener('ready', onReady);
     });
 
     return result === 'PONG';

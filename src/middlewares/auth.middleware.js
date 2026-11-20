@@ -85,7 +85,7 @@ const optionalAuth = asyncHandler(async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id).select('-password');
-      if (user) {
+      if (user?.isActive) {
         if (!user.roles || user.roles.length === 0) {
           user.roles = [user.role || 'tenant'];
         }

@@ -43,9 +43,6 @@ const NOTIFICATION_TYPES = {
 const CATEGORIES = {
   PG_UPDATES:      'pg_updates',
   BOOKING_UPDATES: 'booking_updates',
-  COMPLAINTS:      'complaints',
-  MAINTENANCE:     'maintenance',
-  TASKS:           'tasks',
   PROMOTIONS:      'promotions',
   ANNOUNCEMENTS:   'announcements',
   GENERAL_ALERTS:  'general_alerts',
@@ -55,9 +52,6 @@ const CATEGORIES = {
 const CATEGORY_LABELS = {
   pg_updates:          { label: 'PG Updates', description: 'PG approval, rejection, listing status' },
   booking_updates:     { label: 'Bookings & Visits', description: 'Visit confirmations, reminders, cancellations' },
-  complaints:          { label: 'Complaints', description: 'Complaint status updates' },
-  maintenance:         { label: 'Maintenance', description: 'Maintenance requests and updates' },
-  tasks:               { label: 'Tasks', description: 'Task assignments and reminders' },
   promotions:          { label: 'Promotions', description: 'New PGs, offers, and featured listings' },
   announcements:       { label: 'Announcements', description: 'Platform-wide news and updates' },
   general_alerts:      { label: 'General Alerts', description: 'Other important notifications' },

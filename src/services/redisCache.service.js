@@ -27,7 +27,7 @@ class RedisCacheService {
   _getClient() {
     try {
       const client = getRedisConnection();
-      if (!client || client.status === 'end') return null;
+      if (!client || client.status !== 'ready') return null;
       return client;
     } catch (err) {
       logger.warn(`[RedisCache] Could not acquire Redis connection: ${err.message}`);
@@ -56,7 +56,7 @@ class RedisCacheService {
 
       return JSON.parse(data);
     } catch (err) {
-      logger.warn(`[RedisCache] GET error for key "${key}": ${err.message}`);
+      logger.warn(`[RedisCache] GET error: ${err.message}`);
       return null;
     }
   }
@@ -83,7 +83,7 @@ class RedisCacheService {
       }
       return true;
     } catch (err) {
-      logger.warn(`[RedisCache] SET error for key "${key}": ${err.message}`);
+      logger.warn(`[RedisCache] SET error: ${err.message}`);
       return false;
     }
   }
@@ -101,7 +101,7 @@ class RedisCacheService {
       await withTimeout(client.del(fullKey));
       return true;
     } catch (err) {
-      logger.warn(`[RedisCache] DEL error for key "${key}": ${err.message}`);
+      logger.warn(`[RedisCache] DEL error: ${err.message}`);
       return false;
     }
   }

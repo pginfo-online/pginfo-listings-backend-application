@@ -21,7 +21,7 @@ const {
   getMyMeetups,
 } = require('../../controllers/meetup.controller');
 const { protect, authorize, optionalAuth } = require('../../middlewares/auth.middleware');
-const upload = require('../../middlewares/upload.middleware');
+const { imageUpload: upload } = require('../../middlewares/upload.middleware');
 
 // ─── Public / Optional Auth ───────────────────────────────────────────────────
 // optionalAuth attaches req.user if token present but doesn't require it.
