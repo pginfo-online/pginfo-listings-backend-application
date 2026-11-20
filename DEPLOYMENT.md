@@ -3,7 +3,7 @@
 This guide provides a step-by-step walkthrough to deploy the Node.js backend of **PGinfo.online** to [Render](https://render.com).
 
 ---
-
+deployemnt on the VPS - server 
 ## 📋 Prerequisites
 
 Before deploying, ensure you have the following ready:
