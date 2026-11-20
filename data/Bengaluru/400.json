@@ -1,0 +1,2855 @@
+{
+    "success": true,
+    "message": "PG recent data",
+    "data": [
+        {
+            "metadata": [
+                {
+                    "total": 6393,
+                    "page": 400,
+                    "isNext": true
+                }
+            ],
+            "data": [
+                {
+                    "_id": "69bd01c11f7333726e3aab87",
+                    "pg_id": "PG-21927",
+                    "userId": "69bd01a31f7333726e3aab6d",
+                    "name": "Sky Luxury PG For Gents",
+                    "contactNumber": "8555079223",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Yelahanka",
+                    "address": "Yelahanka, Bengaluru, Karnataka, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.6069977,
+                            13.1154662
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 1,
+                    "favorites": [
+                        "6a2c6652aea4746675096ede"
+                    ],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Fridge",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bd02851f7333726e3aac5a",
+                        "userId": "69bd01a31f7333726e3aab6d",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bd01c11f7333726e3aab87",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bd02851f7333726e3aac5a.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T08:17:09.647Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T08:17:09.648Z",
+                        "updatedAt": "2026-03-20T08:17:09.748Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD062"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Room",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773994608917-Screenshot_20260320_134611.jpg",
+                            "default": false,
+                            "_id": "69bd027f1f7333726e3aac3c"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Kitchen",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773994609192-Screenshot_20260320_134601.jpg",
+                            "default": false,
+                            "_id": "69bd027f1f7333726e3aac3d"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Hall",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773994609462-Screenshot_20260320_134550.jpg",
+                            "default": false,
+                            "_id": "69bd027f1f7333726e3aac3e"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773994609751-Screenshot_20260320_134542.jpg",
+                            "default": true,
+                            "_id": "69bd027f1f7333726e3aac3f"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Washroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773994610021-Screenshot_20260318_133332.jpg",
+                            "default": false,
+                            "_id": "69bd027f1f7333726e3aac40"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T08:13:53.417Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "40",
+                    "street": "Udayanagara",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well maintained and cctv 24 7 and 3 Times food available ",
+                    "gateClosing": true,
+                    "gateClosingTime": "23:00",
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:44:47.116Z",
+                    "reviewStatus": "Approved",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bd01df1f7333726e3aab95",
+                            "roomType": "Single Bed",
+                            "pgId": "69bd01c11f7333726e3aab87",
+                            "monthlyRent": 14000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:14:23.699Z",
+                            "updatedAt": "2026-03-20T08:14:23.699Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bd01df1f7333726e3aab97",
+                            "roomType": "Double Bed",
+                            "pgId": "69bd01c11f7333726e3aab87",
+                            "monthlyRent": 8500,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:14:23.705Z",
+                            "updatedAt": "2026-03-20T08:14:23.705Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bd01df1f7333726e3aab99",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bd01c11f7333726e3aab87",
+                            "monthlyRent": 6500,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:14:23.712Z",
+                            "updatedAt": "2026-03-20T08:14:23.712Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 6500,
+                    "maxMonthlyRent": 14000,
+                    "singleRoomPrice": 14000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bd01a31f7333726e3aab6d",
+                            "name": "Manohar reddy ",
+                            "email": "",
+                            "user_id": "USR-22515",
+                            "phone": "8555079223",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T08:13:23.137Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJkMDFhMzFmNzMzMzcyNmUzYWFiNmQiLCJpYXQiOjE3NzM5OTQ0MDN9.HFaw3TSCbb6y8QVctS1cgPGn6hEjKnM5ekbUzLa-INo"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcfe911f7333726e3aa920",
+                    "pg_id": "PG-21925",
+                    "userId": "69bcfe5a1f7333726e3aa8d4",
+                    "name": "Sri Thirumala PG For Gents",
+                    "contactNumber": "89702 15271",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Yelahanka",
+                    "address": "Yelahanka, Bengaluru, Karnataka, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.6069977,
+                            13.1154662
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 0,
+                    "favorites": [],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Fridge",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcff681f7333726e3aa9d7",
+                        "userId": "69bcfe5a1f7333726e3aa8d4",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcfe911f7333726e3aa920",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcff681f7333726e3aa9d7.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T08:03:52.111Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T08:03:52.112Z",
+                        "updatedAt": "2026-03-20T08:03:52.200Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD062"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993811246-Screenshot_20260320_133318.jpg",
+                            "default": true,
+                            "_id": "69bcff601f7333726e3aa9b9"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Room",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993811539-Screenshot_20260320_133243.jpg",
+                            "default": false,
+                            "_id": "69bcff601f7333726e3aa9ba"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Hall",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993811810-Screenshot_20260320_133233.jpg",
+                            "default": false,
+                            "_id": "69bcff601f7333726e3aa9bb"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Bedroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993812080-Screenshot_20260320_133215.jpg",
+                            "default": false,
+                            "_id": "69bcff601f7333726e3aa9bc"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Kitchen",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993812337-Screenshot_20260320_133205.jpg",
+                            "default": false,
+                            "_id": "69bcff601f7333726e3aa9bd"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T08:00:17.602Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "7",
+                    "street": "Vinayak nagar ",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well maintained and cctv 24 7 and 3 Times food available ",
+                    "gateClosing": true,
+                    "gateClosingTime": "23:00",
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:45:01.639Z",
+                    "reviewStatus": "Approved",
+                    "ownerStatus": "NUMBER_BUSY",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcfeae1f7333726e3aa949",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcfe911f7333726e3aa920",
+                            "monthlyRent": 14000,
+                            "expectedDeposit": 3000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:00:46.113Z",
+                            "updatedAt": "2026-03-20T08:00:46.113Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcfeae1f7333726e3aa94b",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcfe911f7333726e3aa920",
+                            "monthlyRent": 9000,
+                            "expectedDeposit": 3000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:00:46.120Z",
+                            "updatedAt": "2026-03-20T08:00:46.120Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcfeae1f7333726e3aa94d",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcfe911f7333726e3aa920",
+                            "monthlyRent": 6500,
+                            "expectedDeposit": 3000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T08:00:46.125Z",
+                            "updatedAt": "2026-03-20T08:00:46.125Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 6500,
+                    "maxMonthlyRent": 14000,
+                    "singleRoomPrice": 14000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcfe5a1f7333726e3aa8d4",
+                            "name": "Venkatesh yadav",
+                            "email": "",
+                            "user_id": "USR-22512",
+                            "phone": "8970215271",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:59:22.266Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZmU1YTFmNzMzMzcyNmUzYWE4ZDQiLCJpYXQiOjE3NzM5OTM1NjJ9.R6RvhQlFknxK1Jyk5oB-SkceLbn0rj5rI0VCQINTRXc"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcfd921f7333726e3aa811",
+                    "pg_id": "PG-21923",
+                    "userId": "69bcfd511f7333726e3aa7fb",
+                    "name": "Sri Vasavi Pg For Women ",
+                    "contactNumber": "8904636999",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Bangalore",
+                    "address": "5th Main Rd, Marathahalli Village, Marathahalli, Bengaluru, Karnataka 560037",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.57750899999999,
+                            12.9628669
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 1,
+                    "favorites": [
+                        "6a4cb6e79436c300cb02dcdf"
+                    ],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Wi-fi",
+                        "Water Cooler",
+                        "Fridge",
+                        "Microwave",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "AC/ Heating",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": false,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcfefa1f7333726e3aa991",
+                        "userId": "69bcfd511f7333726e3aa7fb",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcfd921f7333726e3aa811",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcfefa1f7333726e3aa991.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T08:02:02.397Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T08:02:02.400Z",
+                        "updatedAt": "2026-03-20T08:02:02.489Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD066"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993585102-Screenshot_2026-03-20-13-24-00-70_99c04817c0de5652397fc8b56c3b3817.jpg",
+                            "default": false,
+                            "_id": "69bcfe7e1f7333726e3aa8fd"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993585311-IMG_20260320_132244.jpg",
+                            "default": false,
+                            "_id": "69bcfe7e1f7333726e3aa8fe"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993585522-IMG_20260320_132222.jpg",
+                            "default": false,
+                            "_id": "69bcfe7e1f7333726e3aa8ff"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993585735-IMG_20260320_132159.jpg",
+                            "default": false,
+                            "_id": "69bcfe7e1f7333726e3aa900"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993585965-IMG_20260320_132141.jpg",
+                            "default": false,
+                            "_id": "69bcfe7e1f7333726e3aa901"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773993586191-IMG_20260320_132127.jpg",
+                            "default": true,
+                            "_id": "69bcfe7e1f7333726e3aa902"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T07:56:02.712Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "869",
+                    "street": "5th Main Rd",
+                    "availableFor": "Girls",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Furnished rooms offering attached bathrooms, personal storage, and unlimited Wi-Fi access. Includes freshly cooked meals, laundry services, weekly cleaning, and 24/7 security coverage.",
+                    "gateClosing": false,
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Both",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:45:16.914Z",
+                    "reviewStatus": "Approved",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcfdb71f7333726e3aa828",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcfd921f7333726e3aa811",
+                            "monthlyRent": 18000,
+                            "expectedDeposit": 5000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:56:39.335Z",
+                            "updatedAt": "2026-03-20T07:56:39.335Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcfdb71f7333726e3aa82a",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcfd921f7333726e3aa811",
+                            "monthlyRent": 10000,
+                            "expectedDeposit": 5000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:56:39.341Z",
+                            "updatedAt": "2026-03-20T07:56:39.341Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcfdb71f7333726e3aa82c",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcfd921f7333726e3aa811",
+                            "monthlyRent": 8000,
+                            "expectedDeposit": 5000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:56:39.349Z",
+                            "updatedAt": "2026-03-20T07:56:39.349Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 8000,
+                    "maxMonthlyRent": 18000,
+                    "singleRoomPrice": 18000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcfd511f7333726e3aa7fb",
+                            "name": "Prasad K",
+                            "email": "",
+                            "user_id": "USR-22510",
+                            "phone": "8904636999",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:54:57.118Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZmQ1MTFmNzMzMzcyNmUzYWE3ZmIiLCJpYXQiOjE3NzM5OTMyOTd9.PrQrRLyEpSjg2ZCO68bmXEFq_Zk2oGiCaKcNARjYzPc"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcf8851f7333726e3aa534",
+                    "pg_id": "PG-21920",
+                    "userId": "69bcf8621f7333726e3aa4e8",
+                    "name": "Srinivasa Delux PG for Gents",
+                    "contactNumber": "",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Bommanahalli",
+                    "address": "33/11, Sri Hari Towers, Silk Board, Hosur Rd, near Madiwala, Roopena Agrahara, Bommanahalli, Bengaluru, Karnataka 560068, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.62537379999999,
+                            12.9121498
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 0,
+                    "favorites": [],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": true,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Water Cooler",
+                        "Fridge",
+                        "Microwave",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard",
+                        "Gym"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "AC/ Heating",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcf9f71f7333726e3aa67f",
+                        "userId": "69bcf8621f7333726e3aa4e8",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcf8851f7333726e3aa534",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcf9f71f7333726e3aa67f.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T07:40:39.671Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T07:40:39.673Z",
+                        "updatedAt": "2026-03-20T07:40:39.770Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD053"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992424333-Screenshot_20260320-131005.png",
+                            "default": false,
+                            "_id": "69bcf9ef1f7333726e3aa65e"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992424979-Screenshot_20260320-130954.png",
+                            "default": false,
+                            "_id": "69bcf9ef1f7333726e3aa65f"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992425478-Screenshot_20260320-130940.png",
+                            "default": false,
+                            "_id": "69bcf9ef1f7333726e3aa660"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992425936-Screenshot_20260320-130928.png",
+                            "default": false,
+                            "_id": "69bcf9ef1f7333726e3aa661"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992426440-Screenshot_20260320-130922.png",
+                            "default": false,
+                            "_id": "69bcf9ef1f7333726e3aa662"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992426814-Screenshot_20260320-130912.png",
+                            "default": true,
+                            "_id": "69bcf9ef1f7333726e3aa663"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T07:34:29.309Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "14/1 4th Cross, 33rd Main, Old Madiwala, Dollar Scheme Colony, BTM 1st Stage, Bengaluru, Karnataka 560068",
+                    "street": "14/1 4th Cross, 33rd Main, Old Madiwala, Dollar Scheme Colony, BTM 1st Stage, Bengaluru, Karnataka 560068",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well-maintained rooms with private bathrooms, Wi-Fi, and storage space. Meals, laundry, cleaning, and security are all provided.",
+                    "gateClosing": true,
+                    "gateClosingTime": "",
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Both",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:42:39.919Z",
+                    "reviewStatus": "Approved",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcf9671f7333726e3aa602",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcf8851f7333726e3aa534",
+                            "monthlyRent": 13000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:38:15.157Z",
+                            "updatedAt": "2026-03-20T07:38:15.157Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf9671f7333726e3aa604",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcf8851f7333726e3aa534",
+                            "monthlyRent": 9000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:38:15.162Z",
+                            "updatedAt": "2026-03-20T07:38:15.162Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf9671f7333726e3aa606",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcf8851f7333726e3aa534",
+                            "monthlyRent": 7000,
+                            "expectedDeposit": 3000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:38:15.167Z",
+                            "updatedAt": "2026-03-20T07:38:15.167Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 7000,
+                    "maxMonthlyRent": 13000,
+                    "singleRoomPrice": 13000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcf8621f7333726e3aa4e8",
+                            "name": "Dharshan ",
+                            "email": "",
+                            "user_id": "USR-22506",
+                            "phone": "6361331356",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:33:54.520Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZjg2MjFmNzMzMzcyNmUzYWE0ZTgiLCJpYXQiOjE3NzM5OTIwMzR9.h5BtNwN4RhnsvIjthAA0YNHuzhmz0vmb6JA0NdgjrXo"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcf85f1f7333726e3aa4db",
+                    "pg_id": "PG-21919",
+                    "userId": "69bcf8341f7333726e3aa49c",
+                    "name": "Arambha Pg for Gents",
+                    "contactNumber": "9035724072",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Shivanagar",
+                    "address": "WOC, Shivanagar, Basaveshwar Nagar, Bengaluru, Karnataka, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.5505264,
+                            12.990124
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 1,
+                    "favorites": [
+                        "6ad759a046995588ba255e75"
+                    ],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Fridge",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcf9181f7333726e3aa5cc",
+                        "userId": "69bcf8341f7333726e3aa49c",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcf85f1f7333726e3aa4db",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcf9181f7333726e3aa5cc.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T07:36:56.998Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T07:36:56.999Z",
+                        "updatedAt": "2026-03-20T07:36:57.127Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD062"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992193123-Screenshot_20260320_130609.jpg",
+                            "default": true,
+                            "_id": "69bcf9121f7333726e3aa5a8"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Hall",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992193391-Screenshot_20260320_130546.jpg",
+                            "default": false,
+                            "_id": "69bcf9121f7333726e3aa5a9"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Kitchen",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992193710-Screenshot_20260320_130540.jpg",
+                            "default": false,
+                            "_id": "69bcf9121f7333726e3aa5aa"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Bedroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992193918-Screenshot_20260320_125708.jpg",
+                            "default": false,
+                            "_id": "69bcf9121f7333726e3aa5ab"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Room",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992194165-Screenshot_20260320_104047.jpg",
+                            "default": false,
+                            "_id": "69bcf9121f7333726e3aa5ac"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Washroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773992194458-Screenshot_20260320_104029.jpg",
+                            "default": false,
+                            "_id": "69bcf9121f7333726e3aa5ad"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T07:33:51.613Z",
+                    "updatedAt": "2026-10-20T12:14:28.912Z",
+                    "__v": 0,
+                    "house_no": "7",
+                    "street": "Near modi hospital ",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well maintained and cctv 24/7 3 times food available ",
+                    "gateClosing": true,
+                    "gateClosingTime": "23:00",
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:42:50.972Z",
+                    "reviewStatus": "Approved",
+                    "ownerStatus": "RINGING_NOT_RESPONDING",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcf87c1f7333726e3aa524",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcf85f1f7333726e3aa4db",
+                            "monthlyRent": 9500,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:34:20.303Z",
+                            "updatedAt": "2026-03-20T07:34:20.303Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf87c1f7333726e3aa526",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcf85f1f7333726e3aa4db",
+                            "monthlyRent": 7500,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:34:20.310Z",
+                            "updatedAt": "2026-03-20T07:34:20.310Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf87c1f7333726e3aa528",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcf85f1f7333726e3aa4db",
+                            "monthlyRent": 6800,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:34:20.329Z",
+                            "updatedAt": "2026-03-20T07:34:20.329Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 6800,
+                    "maxMonthlyRent": 9500,
+                    "singleRoomPrice": 9500,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcf8341f7333726e3aa49c",
+                            "name": "Nithin M",
+                            "email": "",
+                            "user_id": "USR-22505",
+                            "phone": "9035724072",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:33:08.945Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZjgzNDFmNzMzMzcyNmUzYWE0OWMiLCJpYXQiOjE3NzM5OTE5ODh9.1CksEysI_J_bRP03Crg9OCXXQY1K_KWNbRsnFignamE"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcf63c1f7333726e3aa2a5",
+                    "pg_id": "PG-21918",
+                    "userId": "69bcf5ea1f7333726e3aa25e",
+                    "name": "Sri Varshini PG For gents",
+                    "contactNumber": "73532 18898",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Rajajinagar",
+                    "address": "Manjunath Nagar, Rajajinagar, Bengaluru, Karnataka, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.5574781,
+                            12.9817986
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 0,
+                    "favorites": [],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Wi-fi",
+                        "Fridge",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcf7141f7333726e3aa34e",
+                        "userId": "69bcf5ea1f7333726e3aa25e",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcf63c1f7333726e3aa2a5",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcf7141f7333726e3aa34e.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T07:28:20.757Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T07:28:20.758Z",
+                        "updatedAt": "2026-03-20T07:28:20.855Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD062"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Hall",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991672652-Screenshot_20260320_125740.jpg",
+                            "default": false,
+                            "_id": "69bcf70d1f7333726e3aa327"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Bedroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991672938-Screenshot_20260320_125731.jpg",
+                            "default": false,
+                            "_id": "69bcf70d1f7333726e3aa328"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Washroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991673219-Screenshot_20260320_125721.jpg",
+                            "default": false,
+                            "_id": "69bcf70d1f7333726e3aa329"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Room",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991673512-Screenshot_20260320_125708.jpg",
+                            "default": false,
+                            "_id": "69bcf70d1f7333726e3aa32a"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991673942-Screenshot_20260320_125656.jpg",
+                            "default": true,
+                            "_id": "69bcf70d1f7333726e3aa32b"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T07:24:44.313Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "3",
+                    "street": "Chord road ",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well maintained and cctv 24/7",
+                    "gateClosing": false,
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:43:37.975Z",
+                    "reviewStatus": "Approved",
+                    "ownerStatus": "NUMBER_BUSY",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcf6611f7333726e3aa2b3",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcf63c1f7333726e3aa2a5",
+                            "monthlyRent": 8000,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:25:21.194Z",
+                            "updatedAt": "2026-03-20T07:25:21.194Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf6611f7333726e3aa2b5",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcf63c1f7333726e3aa2a5",
+                            "monthlyRent": 6800,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:25:21.202Z",
+                            "updatedAt": "2026-03-20T07:25:21.202Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf6611f7333726e3aa2b7",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcf63c1f7333726e3aa2a5",
+                            "monthlyRent": 6300,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:25:21.208Z",
+                            "updatedAt": "2026-03-20T07:25:21.208Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 6300,
+                    "maxMonthlyRent": 8000,
+                    "singleRoomPrice": 8000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcf5ea1f7333726e3aa25e",
+                            "name": "Bhargav reddy ",
+                            "email": "",
+                            "user_id": "USR-22503",
+                            "phone": "7353218898",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:23:22.623Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZjVlYTFmNzMzMzcyNmUzYWEyNWUiLCJpYXQiOjE3NzQyNzEwMTR9.uQW-4x4lyIWrVM39rH14RmVcxlUvnVIdQPqotWIXVXg"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcf34b1f7333726e3aa038",
+                    "pg_id": "PG-21917",
+                    "userId": "69bcf2f51f7333726e3a9ff3",
+                    "name": "Sri Lakshmi Chaitanya PG for Gent's ",
+                    "contactNumber": "9880682950",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Bangalore",
+                    "address": "Tulsi Theater Rd, 7th Cross, Marathahalli Village, Marathahalli, Bengaluru, Karnataka 560037",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.57750899999999,
+                            12.9628669
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 2,
+                    "favorites": [
+                        "6a4cb6e79436c300cb02dcdf",
+                        "6a68b4baff87307439f3be82"
+                    ],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": true,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Water Cooler",
+                        "Fridge",
+                        "Microwave",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "AC/ Heating",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcf6da1f7333726e3aa300",
+                        "userId": "69bcf2f51f7333726e3a9ff3",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcf34b1f7333726e3aa038",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcf6da1f7333726e3aa300.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T07:27:22.224Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T07:27:22.225Z",
+                        "updatedAt": "2026-03-20T07:27:22.371Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD066"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991449673-IMG_20260320_125353.jpg",
+                            "default": false,
+                            "_id": "69bcf62c1f7333726e3aa281"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991458147-IMG_20260320_125340.jpg",
+                            "default": false,
+                            "_id": "69bcf62c1f7333726e3aa282"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991458413-IMG_20260320_125326.jpg",
+                            "default": false,
+                            "_id": "69bcf62c1f7333726e3aa283"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991458799-IMG_20260320_125313.jpg",
+                            "default": true,
+                            "_id": "69bcf62c1f7333726e3aa284"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773991459098-IMG_20260320_125302.jpg",
+                            "default": false,
+                            "_id": "69bcf62c1f7333726e3aa285"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T07:12:11.398Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "389,2",
+                    "street": "7th Cross, Marathahalli Village",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well-maintained rooms with private bathrooms, Wi-Fi, and storage space. Meals, laundry, cleaning, and security are all provided.",
+                    "gateClosing": false,
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:43:53.970Z",
+                    "reviewStatus": "Approved",
+                    "ownerStatus": "RINGING_NOT_RESPONDING",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcf4eb1f7333726e3aa1b9",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcf34b1f7333726e3aa038",
+                            "monthlyRent": 13000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:19:07.676Z",
+                            "updatedAt": "2026-03-20T07:19:07.676Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf4eb1f7333726e3aa1bb",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcf34b1f7333726e3aa038",
+                            "monthlyRent": 7000,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:19:07.685Z",
+                            "updatedAt": "2026-03-20T07:19:07.685Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcf4eb1f7333726e3aa1bd",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcf34b1f7333726e3aa038",
+                            "monthlyRent": 5000,
+                            "expectedDeposit": 2000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T07:19:07.693Z",
+                            "updatedAt": "2026-03-20T07:19:07.693Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 5000,
+                    "maxMonthlyRent": 13000,
+                    "singleRoomPrice": 13000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcf2f51f7333726e3a9ff3",
+                            "name": "Masthan Basha ",
+                            "email": "",
+                            "user_id": "USR-22502",
+                            "phone": "9880682950",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T07:10:45.289Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZjJmNTFmNzMzMzcyNmUzYTlmZjMiLCJpYXQiOjE3NzM5OTEwODh9.8kAuOeFALTrNgMS4WeAGC5wM0tlpoQc_o06e0ukesN8"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcebff1f7333726e3a95d8",
+                    "pg_id": "PG-21914",
+                    "userId": "69bcebdf1f7333726e3a958a",
+                    "name": "Shiva PG for Gents ",
+                    "contactNumber": "",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Bommanahalli",
+                    "address": "33/11, Sri Hari Towers, Silk Board, Hosur Rd, near Madiwala, Roopena Agrahara, Bommanahalli, Bengaluru, Karnataka 560068, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.62537379999999,
+                            12.9121498
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 0,
+                    "favorites": [],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": true,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Water Cooler",
+                        "Fridge",
+                        "Microwave",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard",
+                        "Gym"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "AC/ Heating",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcece81f7333726e3a97b4",
+                        "userId": "69bcebdf1f7333726e3a958a",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcebff1f7333726e3a95d8",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcece81f7333726e3a97b4.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T06:44:56.282Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T06:44:56.283Z",
+                        "updatedAt": "2026-03-20T06:44:56.443Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD053"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989078933-Screenshot_20260320-121358.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976a"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989079288-Screenshot_20260320-121344.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976b"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989079656-Screenshot_20260320-121335.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976c"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989080073-Screenshot_20260320-121322.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976d"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989080575-Screenshot_20260320-121307.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976e"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989080904-Screenshot_20260320-121257.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a976f"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989081276-Screenshot_20260320-121247.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a9770"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989081593-Screenshot_20260320-121239.png",
+                            "default": false,
+                            "_id": "69bcece01f7333726e3a9771"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773989081947-Screenshot_20260320-121231.png",
+                            "default": true,
+                            "_id": "69bcece01f7333726e3a9772"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T06:41:03.234Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "101, 6th Main Rd, Old Madiwala, Jay Bheema Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068",
+                    "street": "101, 6th Main Rd, Old Madiwala, Jay Bheema Nagar, 1st Stage, BTM 1st Stage, Bengaluru, Karnataka 560068",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Fully furnished rooms with Wi-Fi, air conditioning, attached bathrooms, and personal storage. Enjoy daily meals, weekly housekeeping, laundry, and 24/7 CCTV security.",
+                    "gateClosing": true,
+                    "gateClosingTime": "",
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Both",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:43:11.014Z",
+                    "reviewStatus": "Approved",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcec231f7333726e3a9610",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcebff1f7333726e3a95d8",
+                            "monthlyRent": 13000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:41:39.563Z",
+                            "updatedAt": "2026-03-20T06:41:39.563Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcec231f7333726e3a9612",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcebff1f7333726e3a95d8",
+                            "monthlyRent": 9000,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:41:39.571Z",
+                            "updatedAt": "2026-03-20T06:41:39.571Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcec231f7333726e3a9614",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcebff1f7333726e3a95d8",
+                            "monthlyRent": 6500,
+                            "expectedDeposit": 4000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:41:39.575Z",
+                            "updatedAt": "2026-03-20T06:41:39.575Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 6500,
+                    "maxMonthlyRent": 13000,
+                    "singleRoomPrice": 13000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcebdf1f7333726e3a958a",
+                            "name": "Shivakumar ",
+                            "email": "",
+                            "user_id": "USR-22494",
+                            "phone": "9000653642",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T06:40:31.520Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZWJkZjFmNzMzMzcyNmUzYTk1OGEiLCJpYXQiOjE3Nzc2NDQ4MzV9.OS9H-rzwOYHETvkQekGinR1Ot-4c4CTP_66V8ROof4w"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bce4cb1f7333726e3a8d6a",
+                    "pg_id": "PG-21910",
+                    "userId": "69bce4881f7333726e3a8d46",
+                    "name": "Amaravate ladies pg ",
+                    "contactNumber": "‪81234 23355‬",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Bangalore",
+                    "address": " Bharat Regency, main road, opposite to kalamandir, Aswath Nagar, Marathahalli, Bengaluru, Karnataka 560037",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.57750899999999,
+                            12.9628669
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 0,
+                    "favorites": [],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": true,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Lift",
+                        "Wi-fi",
+                        "Water Cooler",
+                        "Fridge",
+                        "Microwave",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "AC/ Heating",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": false,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bce70a1f7333726e3a8f9b",
+                        "userId": "69bce4881f7333726e3a8d46",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bce4cb1f7333726e3a8d6a",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bce70a1f7333726e3a8f9b.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T06:19:54.888Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T06:19:54.889Z",
+                        "updatedAt": "2026-03-20T06:19:54.993Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD066"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987463681-IMG_20260320_114711.jpg",
+                            "default": true,
+                            "_id": "69bce6921f7333726e3a8ef7"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987463917-IMG_20260320_114657.jpg",
+                            "default": false,
+                            "_id": "69bce6921f7333726e3a8ef8"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987464187-IMG_20260320_114638.jpg",
+                            "default": false,
+                            "_id": "69bce6921f7333726e3a8ef9"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987464404-IMG_20260320_114626.jpg",
+                            "default": false,
+                            "_id": "69bce6921f7333726e3a8efa"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987464610-IMG_20260320_114607.jpg",
+                            "default": false,
+                            "_id": "69bce6921f7333726e3a8efb"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773987464823-IMG_20260320_114555.jpg",
+                            "default": false,
+                            "_id": "69bce6921f7333726e3a8efc"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T06:10:19.264Z",
+                    "updatedAt": "2026-08-05T06:43:38.330Z",
+                    "__v": 0,
+                    "house_no": "106C",
+                    "street": "Opposite to kalamandir",
+                    "availableFor": "Girls",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well-maintained rooms with private bathrooms, Wi-Fi, and storage space. Meals, laundry, cleaning, and security are all provided.",
+                    "gateClosing": false,
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Both",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:38:57.533Z",
+                    "reviewStatus": "Approved",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bce5131f7333726e3a8da3",
+                            "roomType": "Single Bed",
+                            "pgId": "69bce4cb1f7333726e3a8d6a",
+                            "monthlyRent": 20000,
+                            "expectedDeposit": 20000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:11:31.031Z",
+                            "updatedAt": "2026-03-20T06:11:31.031Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bce5131f7333726e3a8da5",
+                            "roomType": "Double Bed",
+                            "pgId": "69bce4cb1f7333726e3a8d6a",
+                            "monthlyRent": 12000,
+                            "expectedDeposit": 12000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:11:31.037Z",
+                            "updatedAt": "2026-03-20T06:11:31.037Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bce5131f7333726e3a8da7",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bce4cb1f7333726e3a8d6a",
+                            "monthlyRent": 8000,
+                            "expectedDeposit": 8000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T06:11:31.041Z",
+                            "updatedAt": "2026-03-20T06:11:31.041Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 8000,
+                    "maxMonthlyRent": 20000,
+                    "singleRoomPrice": 20000,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bce4881f7333726e3a8d46",
+                            "name": "Sirisha Ramachandraiah",
+                            "email": "",
+                            "user_id": "USR-22491",
+                            "phone": "8123423355",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T06:09:12.131Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZTQ4ODFmNzMzMzcyNmUzYThkNDYiLCJpYXQiOjE3NzM5ODY5NTJ9.H1gst1Er7-plsroMiT3-2rvEuDE67LhyXMkfYPGmCAQ"
+                        }
+                    ]
+                },
+                {
+                    "_id": "69bcded51f7333726e3a8a1c",
+                    "pg_id": "PG-21907",
+                    "userId": "69bcdeb01f7333726e3a89ed",
+                    "name": "Shresth Boys PG",
+                    "contactNumber": "8320895348",
+                    "contactEmail": "",
+                    "city": "Bengaluru",
+                    "rating": 0,
+                    "locality": "Shivanagar",
+                    "address": "WOC, Shivanagar, Basaveshwar Nagar, Bengaluru, Karnataka, India",
+                    "location": {
+                        "type": "Point",
+                        "coordinates": [
+                            77.5505264,
+                            12.990124
+                        ]
+                    },
+                    "noticePeriod": true,
+                    "noticePeriodDuration": 30,
+                    "maintenanceAmount": false,
+                    "foodIncluded": true,
+                    "favoriteCount": 1,
+                    "favorites": [
+                        "6ac7492f2cf62339b5c6610a"
+                    ],
+                    "includedMeals": [
+                        "Breakfast",
+                        "Lunch",
+                        "Dinner"
+                    ],
+                    "pgHostelRule": [
+                        "Rent lock-in",
+                        "No guardians stay"
+                    ],
+                    "isLaundryService": false,
+                    "roomCleaning": true,
+                    "waterFacility": true,
+                    "availableAmenities": [
+                        "Power-Back Up",
+                        "Wi-fi",
+                        "Fridge",
+                        "First Aid Kit",
+                        "Warden/ Manager",
+                        "Security Guard"
+                    ],
+                    "roomAmenities": [
+                        "Television",
+                        "Single Bed",
+                        "Mattress + Pillow",
+                        "Table + Chair",
+                        "Blanket/Quilt",
+                        "Side Table",
+                        "Hot Water",
+                        "Cupboard"
+                    ],
+                    "parking": true,
+                    "form_status": "Complete",
+                    "planDetails": [
+                        {
+                            "basicInfo": {
+                                "planName": "Free Plan",
+                                "NumberOfProperties": "1"
+                            },
+                            "pricingInformation": {
+                                "AnnualDiscountedRate": "0",
+                                "AnnualRate": "0",
+                                "QuarterlyRate": "0"
+                            },
+                            "features": {
+                                "premiumList": true,
+                                "verifiedTag": true,
+                                "profPhotoshoot": false,
+                                "socialMediaProm": true,
+                                "propertyDesc": true,
+                                "higherPosition": true
+                            },
+                            "_id": "67591bfcf777c218288032d9",
+                            "adminId": "66e6ec570c9f3742e6ecdb0e",
+                            "createdBy": "Admin",
+                            "plan_id": "PLN-16",
+                            "razorPayMonthlyId": null,
+                            "razorPayYearlyId": null,
+                            "status": "active",
+                            "createdAt": "2024-12-11T04:58:36.451Z",
+                            "updatedAt": "2024-12-11T04:58:36.451Z",
+                            "__v": 0
+                        }
+                    ],
+                    "verified": true,
+                    "views": 0,
+                    "status": "Active",
+                    "active": true,
+                    "adminApproved": true,
+                    "subscriptionDetails": {
+                        "_id": "69bcdfea1f7333726e3a8ae5",
+                        "userId": "69bcdeb01f7333726e3a89ed",
+                        "planId": null,
+                        "planDetails": [
+                            {
+                                "basicInfo": {
+                                    "planName": "Free Plan",
+                                    "NumberOfProperties": "1"
+                                },
+                                "pricingInformation": {
+                                    "AnnualDiscountedRate": "0",
+                                    "AnnualRate": "0",
+                                    "QuarterlyRate": "0"
+                                },
+                                "features": {
+                                    "premiumList": true,
+                                    "verifiedTag": true,
+                                    "profPhotoshoot": false,
+                                    "socialMediaProm": true,
+                                    "propertyDesc": true,
+                                    "higherPosition": true
+                                },
+                                "_id": "67591bfcf777c218288032d9",
+                                "adminId": "66e6ec570c9f3742e6ecdb0e",
+                                "createdBy": "Admin",
+                                "plan_id": "PLN-16",
+                                "razorPayMonthlyId": null,
+                                "razorPayYearlyId": null,
+                                "status": "active",
+                                "createdAt": "2024-12-11T04:58:36.451Z",
+                                "updatedAt": "2024-12-11T04:58:36.451Z",
+                                "__v": 0
+                            }
+                        ],
+                        "propertyId": "69bcded51f7333726e3a8a1c",
+                        "pdfUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/subscription_69bcdfea1f7333726e3a8ae5.pdf",
+                        "gst": null,
+                        "propertyModel": "pgs",
+                        "subscriptionType": "free",
+                        "subscriptionId": "Free",
+                        "status": "active",
+                        "startDate": "2026-03-20T05:49:30.282Z",
+                        "endDate": null,
+                        "isUpgrade": false,
+                        "previousSubscriptionId": null,
+                        "createdAt": "2026-03-20T05:49:30.283Z",
+                        "updatedAt": "2026-03-20T05:49:30.418Z",
+                        "__v": 0
+                    },
+                    "delete": false,
+                    "posted_by_details": {
+                        "employeeId": "PD062"
+                    },
+                    "propertyMedia": [
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985742531-Screenshot_20260320_111846.jpg",
+                            "default": false,
+                            "_id": "69bcdfe31f7333726e3a8ac3"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Hall",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985742801-Screenshot_20260320_111838.jpg",
+                            "default": false,
+                            "_id": "69bcdfe31f7333726e3a8ac4"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Kitchen",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985743042-Screenshot_20260320_111710.jpg",
+                            "default": false,
+                            "_id": "69bcdfe31f7333726e3a8ac5"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Outside",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985743309-Screenshot_20260320_111658.jpg",
+                            "default": true,
+                            "_id": "69bcdfe31f7333726e3a8ac6"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Room",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985743548-Screenshot_20260320_104047.jpg",
+                            "default": false,
+                            "_id": "69bcdfe31f7333726e3a8ac7"
+                        },
+                        {
+                            "mediaType": "Image",
+                            "mediaTitle": "Washroom",
+                            "mediaUrl": "https://pgdekhoprod.s3.ap-south-1.amazonaws.com/pgDekhoWeb/1773985743810-Screenshot_20260320_104029.jpg",
+                            "default": false,
+                            "_id": "69bcdfe31f7333726e3a8ac8"
+                        }
+                    ],
+                    "createdAt": "2026-03-20T05:44:53.413Z",
+                    "updatedAt": "2026-10-15T08:17:34.705Z",
+                    "__v": 0,
+                    "house_no": "41",
+                    "street": "Near Shivanagar signal ",
+                    "availableFor": "Boys",
+                    "availableFrom": "2026-03-20T00:00:00.000Z",
+                    "description": "Well maintained and cctv 24/7",
+                    "gateClosing": false,
+                    "preferredGuest": "Both",
+                    "laundryService": {
+                        "title": "Weekdays",
+                        "days": "Mon-Fri"
+                    },
+                    "vehicleType": "Bike",
+                    "endTime": "",
+                    "postBy": "Agent",
+                    "selectTimeSchedule": "Available All Day",
+                    "startTime": "",
+                    "planId": null,
+                    "subscriptionId": "Free",
+                    "subscriptionType": "free",
+                    "adminApprovalDate": "2026-03-20T11:39:08.621Z",
+                    "reviewStatus": "Approved",
+                    "ownerStatus": "RINGING_NOT_RESPONDING",
+                    "listingRank": 0,
+                    "planNameString": "Free Plan",
+                    "planNameStringSafe": "Free Plan",
+                    "subscriptionRank": 1,
+                    "pgRooms": [
+                        {
+                            "_id": "69bcdef91f7333726e3a8a4a",
+                            "roomType": "Single Bed",
+                            "pgId": "69bcded51f7333726e3a8a1c",
+                            "monthlyRent": 6500,
+                            "expectedDeposit": 1000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T05:45:29.661Z",
+                            "updatedAt": "2026-03-20T05:45:29.661Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcdef91f7333726e3a8a4c",
+                            "roomType": "Double Bed",
+                            "pgId": "69bcded51f7333726e3a8a1c",
+                            "monthlyRent": 5500,
+                            "expectedDeposit": 1000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T05:45:29.666Z",
+                            "updatedAt": "2026-03-20T05:45:29.666Z",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "69bcdef91f7333726e3a8a4e",
+                            "roomType": "Triple Bed",
+                            "pgId": "69bcded51f7333726e3a8a1c",
+                            "monthlyRent": 5000,
+                            "expectedDeposit": 1000,
+                            "roomImage": [],
+                            "createdAt": "2026-03-20T05:45:29.671Z",
+                            "updatedAt": "2026-03-20T05:45:29.671Z",
+                            "__v": 0
+                        }
+                    ],
+                    "minMonthlyRent": 5000,
+                    "maxMonthlyRent": 6500,
+                    "singleRoomPrice": 6500,
+                    "ratings": [],
+                    "owner": [
+                        {
+                            "_id": "69bcdeb01f7333726e3a89ed",
+                            "name": "Priya ",
+                            "email": "",
+                            "user_id": "USR-22490",
+                            "phone": "8320895348",
+                            "profileImage": "",
+                            "isEmailVerify": false,
+                            "tenant": false,
+                            "whatsapp_opt_in": false,
+                            "active": true,
+                            "delete": false,
+                            "fcmToken": {},
+                            "joinedAsTenant": false,
+                            "dailyContactCount": 0,
+                            "createdAt": "2026-03-20T05:44:16.609Z",
+                            "updatedAt": "2026-11-20T00:00:00.698Z",
+                            "__v": 0,
+                            "jwtToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OWJjZGViMDFmNzMzMzcyNmUzYTg5ZWQiLCJpYXQiOjE3NzM5ODU0NTZ9.3iJfTvP7rgNCbFWLwSDdlHDWLxqV682QiM0CkZC4lQE"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
