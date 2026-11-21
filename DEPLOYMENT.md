@@ -278,7 +278,7 @@ Paste the following Nginx configuration:
 ```nginx
 # Dedicated upstream for PGinfo Listings Backend
 upstream pginfo_listings_backend_upstream {
-    server 127.0.0.1:5001;
+    server 127.0.0.1:5005;
     keepalive 64;
 }
 
@@ -341,7 +341,7 @@ Once Certbot completes, update `/etc/nginx/sites-available/api.pginfo.business` 
 
 ```nginx
 upstream pginfo_listings_backend_upstream {
-    server 127.0.0.1:5001;
+    server 127.0.0.1:5005;
     keepalive 64;
 }
 
