@@ -56,34 +56,52 @@ async function runTestSuite() {
   {
     const originalEnv = process.env.NODE_ENV;
     const originalUrl = process.env.REDIS_URL;
+    const originalReq = process.env.REDIS_REQUIRED;
+    const originalStrict = process.env.REDIS_STRICT;
 
     try {
-      // Test missing REDIS_URL in production
       process.env.NODE_ENV = 'production';
+
+      // 1. Missing REDIS_URL in production: returns false (resilient fallback mode)
       process.env.REDIS_URL = '';
+      delete process.env.REDIS_REQUIRED;
+      const resilientResult = validateRedisConfig();
+      assert.strictEqual(resilientResult, false, 'Missing REDIS_URL should return false in resilient mode');
+
+      // 2. Strict mode: Missing REDIS_URL throws when REDIS_REQUIRED=true
+      process.env.REDIS_REQUIRED = 'true';
       assert.throws(() => {
         validateRedisConfig();
-      }, /Missing REDIS_URL environment variable/);
+      }, /REDIS_URL environment variable is not configured/);
+      delete process.env.REDIS_REQUIRED;
 
-      // Test insecure protocol (redis://) in production
-      process.env.REDIS_URL = 'redis://default:pass@endpoint.example.test:6379';
-      assert.throws(() => {
-        validateRedisConfig();
-      }, /Insecure protocol/);
+      // 3. Localhost and 127.0.0.1 in production: permitted for single-node VPS setup
+      process.env.REDIS_URL = 'redis://127.0.0.1:6379';
+      const localResult = validateRedisConfig();
+      assert.strictEqual(localResult, true, 'Localhost 127.0.0.1 must be permitted in production');
 
-      // Test localhost / 127.0.0.1 in production
-      process.env.REDIS_URL = 'rediss://default:pass@127.0.0.1:6379';
-      assert.throws(() => {
-        validateRedisConfig();
-      }, /Localhost \/ 127.0.0.1 is not permitted/);
+      process.env.REDIS_URL = 'redis://localhost:6379';
+      const localhostResult = validateRedisConfig();
+      assert.strictEqual(localhostResult, true, 'Localhost hostname must be permitted in production');
 
-      // Test valid rediss:// in production
+      // 4. Remote TLS (rediss://) in production: valid
       process.env.REDIS_URL = tlsFixture;
       const validProd = validateRedisConfig();
       assert.strictEqual(validProd, true, 'Valid Redis rediss:// URL must pass in production');
+
+      // 5. Insecure protocol on remote host with REDIS_STRICT=true throws
+      process.env.REDIS_STRICT = 'true';
+      process.env.REDIS_URL = 'redis://default:pass@endpoint.example.test:6379';
+      assert.throws(() => {
+        validateRedisConfig();
+      }, /Non-TLS protocol/);
     } finally {
       process.env.NODE_ENV = originalEnv;
       process.env.REDIS_URL = originalUrl;
+      if (originalReq !== undefined) process.env.REDIS_REQUIRED = originalReq;
+      else delete process.env.REDIS_REQUIRED;
+      if (originalStrict !== undefined) process.env.REDIS_STRICT = originalStrict;
+      else delete process.env.REDIS_STRICT;
     }
     console.log('  ✅ Production validation guardrails passed');
   }
@@ -207,7 +225,24 @@ async function runTestSuite() {
     console.log('  ✅ Graceful shutdown and reconnection lifecycle verified');
   }
 
-  console.log('\n🎉 ALL 9 REDIS TESTS PASSED FLAWLESSLY! 🎉\n');
+  // ─── Test 10: In-Memory Resilient Fallback Cache ─────────────────────────
+  console.log('▶ Test 10: Resilient In-Memory Fallback Cache');
+  {
+    const memKey = `mem:test:${Date.now()}`;
+    const memData = { session: 'user_456', active: true };
+
+    redisCache.memoryStore.set(memKey, memData, 10);
+    const retrieved = redisCache.memoryStore.get(memKey);
+    assert.deepStrictEqual(retrieved, memData, 'Memory store should get and set data correctly');
+
+    redisCache.memoryStore.del(memKey);
+    const afterDel = redisCache.memoryStore.get(memKey);
+    assert.strictEqual(afterDel, null, 'Memory store should delete data correctly');
+
+    console.log('  ✅ Resilient in-memory fallback cache verified');
+  }
+
+  console.log('\n🎉 ALL 10 REDIS TESTS PASSED FLAWLESSLY! 🎉\n');
 }
 
 runTestSuite()

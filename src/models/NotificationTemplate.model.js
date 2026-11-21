@@ -76,6 +76,6 @@ const notificationTemplateSchema = new mongoose.Schema(
 
 // ─── Indexes ──────────────────────────────────────────────────────────────────
 notificationTemplateSchema.index({ type: 1, isActive: 1 });
-notificationTemplateSchema.index({ name: 1 }, { unique: true });
+// Note: name already has unique: true in schema definition above
 
 module.exports = mongoose.model('NotificationTemplate', notificationTemplateSchema);

@@ -1,4 +1,6 @@
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -6,6 +8,12 @@ const morgan = require('morgan');
 const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
+
+// Ensure local logs directory exists for PM2 / logging
+const logsDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logsDir)) {
+  try { fs.mkdirSync(logsDir, { recursive: true }); } catch (_) {}
+}
 
 const connectDB = require('./src/config/db');
 const { disconnectDB } = connectDB;
@@ -64,13 +72,20 @@ const defaultOrigins = [
   'https://pginfo.in',
   'https://pginfo.app',
   'https://www.pginfo.app',
+  'https://pginfo.business',
+  'https://www.pginfo.business',
+  'https://api.pginfo.business',
+  'https://admin.pginfo.business',
+  'https://pginfo.online',
+  'https://www.pginfo.online',
+  'https://admin.pginfo.online',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:3000',
   'http://localhost:8081',
   'http://127.0.0.1:5173',
-  'http://localhost:3000',
+  'http://127.0.0.1:3000',
 ];
 
 const userConfiguredOrigins = process.env.CLIENT_URL
@@ -110,7 +125,16 @@ const corsOptions = {
     return callback(null, true);
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'X-Request-Id',
+    'X-Correlation-Id',
+    'Cache-Control',
+  ],
+  exposedHeaders: ['X-Request-Id', 'X-Correlation-Id'],
   credentials: true,
 };
 
@@ -200,8 +224,8 @@ app.get('/health/ready', async (_req, res) => {
   const isDbReady = mongoose.connection.readyState === 1;
   const isRedisReady = await isRedisHealthy(1500);
 
-  if (isDbReady && isRedisReady) {
-    return res.status(200).send('READY');
+  if (isDbReady) {
+    return res.status(200).send(isRedisReady ? 'READY' : 'READY_DEGRADED');
   }
   return res.status(503).send('NOT_READY');
 });
@@ -222,8 +246,11 @@ let server;
 
 const startServer = async () => {
   try {
-    // 1. Validate Redis configuration (fails fast in production if REDIS_URL is missing or invalid)
-    validateRedisConfig();
+    // 1. Validate Redis configuration (connects or runs in resilient in-memory mode)
+    const redisOk = validateRedisConfig();
+    if (!redisOk) {
+      logger.info('ℹ️ Operating in resilient mode: Caching will use in-memory fallback store until Redis is connected.');
+    }
 
     // 2. Establish database connection before accepting traffic
     await connectDB();

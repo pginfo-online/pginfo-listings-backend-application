@@ -41,7 +41,9 @@ const sanitizeErrorMessage = (msg) => {
 
 const getRedisUrl = () => {
   const url = process.env.REDIS_URL?.trim() || '';
-  if (process.env.NODE_ENV !== 'production' && /^(localhost|127\.0\.0\.1):\d+$/.test(url)) {
+  if (!url) return '';
+  // If user passes host:port without scheme (e.g. localhost:6379 or 127.0.0.1:6379), prepend redis://
+  if (/^([a-zA-Z0-9.-]+):(\d+)$/.test(url)) {
     return `redis://${url}`;
   }
   return url;
@@ -76,30 +78,16 @@ const parseRedisConfig = () => {
 
 /**
  * Validate Redis configuration against production requirements
- * @throws {Error} in production if configuration is missing or insecure
  * @returns {boolean}
  */
 const validateRedisConfig = () => {
   const isProduction = process.env.NODE_ENV === 'production';
   const redisUrl = getRedisUrl();
+  const isRedisDisabled = process.env.REDIS_ENABLED === 'false';
 
-  if (!redisUrl) {
-    const msg = '[Redis] Missing REDIS_URL environment variable. A Redis or Valkey TLS URL is required.';
-    if (isProduction) {
-      logger.error(`❌ ${msg}`);
-      throw new Error(msg);
-    } else {
-      logger.warn(`⚠️ ${msg} Caching and background workers will operate in offline/degraded mode.`);
-      return false;
-    }
-  }
-
-  let parsed;
-  try {
-    parsed = new URL(redisUrl);
-  } catch (err) {
-    const msg = `[Redis] Invalid REDIS_URL format: ${err.message}`;
-    if (isProduction) {
+  if (isRedisDisabled || !redisUrl) {
+    const msg = '[Redis] REDIS_URL environment variable is not configured. Backend running in resilient mode (in-memory caching & direct DB fallback).';
+    if (process.env.REDIS_REQUIRED === 'true') {
       logger.error(`❌ ${msg}`);
       throw new Error(msg);
     }
@@ -107,21 +95,32 @@ const validateRedisConfig = () => {
     return false;
   }
 
-  // Ensure TLS is used (rediss://)
-  if (parsed.protocol !== 'rediss:') {
-    const msg = `[Redis] Insecure protocol "${parsed.protocol}" in REDIS_URL. Production requires TLS ("rediss://").`;
-    if (isProduction) {
+  let parsed;
+  try {
+    parsed = new URL(redisUrl);
+  } catch (err) {
+    const msg = `[Redis] Invalid REDIS_URL format: ${err.message}`;
+    if (process.env.REDIS_REQUIRED === 'true' || process.env.REDIS_STRICT === 'true') {
       logger.error(`❌ ${msg}`);
       throw new Error(msg);
     }
-    logger.warn(`⚠️ ${msg}`);
+    logger.warn(`⚠️ ${msg}. Backend will fall back to in-memory mode.`);
+    return false;
   }
 
-  // Reject localhost / 127.0.0.1 in production
-  if (isProduction && (parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1')) {
-    const msg = '[Redis] Localhost / 127.0.0.1 is not permitted for REDIS_URL in production environment.';
-    logger.error(`❌ ${msg}`);
-    throw new Error(msg);
+  const isLocalhost =
+    parsed.hostname === 'localhost' ||
+    parsed.hostname === '127.0.0.1' ||
+    parsed.hostname === '::1';
+
+  // Remote production Redis over public internet should ideally use TLS (rediss://)
+  if (isProduction && !isLocalhost && parsed.protocol !== 'rediss:') {
+    const msg = `[Redis] Non-TLS protocol "${parsed.protocol}" in remote REDIS_URL. Strict mode requires TLS ("rediss://").`;
+    if (process.env.REDIS_STRICT === 'true') {
+      logger.error(`❌ ${msg}`);
+      throw new Error(msg);
+    }
+    logger.warn(`⚠️ [Redis] Non-TLS protocol "${parsed.protocol}" for remote Redis. Consider using TLS ("rediss://") for external cloud Redis.`);
   }
 
   return true;
@@ -137,11 +136,11 @@ const createClientOptions = (customOptions = {}) => {
   const hostname = parsed?.hostname;
 
   return {
-    // TLS settings with Server Name Indication (SNI)
-    tls: (parsed?.isTls || !parsed)
+    // TLS settings with Server Name Indication (SNI) only when TLS is used
+    tls: parsed?.isTls
       ? {
           servername: hostname,
-          rejectUnauthorized: true,
+          rejectUnauthorized: process.env.REDIS_REJECT_UNAUTHORIZED !== 'false',
         }
       : undefined,
 
@@ -153,7 +152,6 @@ const createClientOptions = (customOptions = {}) => {
     enableOfflineQueue: false,
     maxRetriesPerRequest: 1,
     retryStrategy: (times) => Math.min(100 * 2 ** Math.min(times - 1, 6), 5000) + Math.floor(Math.random() * 100),
-
 
     reconnectOnError: (err) => {
       const targetErrors = ['READONLY', 'ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT'];
@@ -214,26 +212,28 @@ const getRedisConnection = () => {
   }
 
   const redisUrl = getRedisUrl();
-  if (!redisUrl) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('[Redis] REDIS_URL is required in production environment.');
-    }
+  if (!redisUrl || process.env.REDIS_ENABLED === 'false') {
     return null;
   }
 
-  const options = createClientOptions();
-  redisConnection = new Redis(redisUrl, options);
+  try {
+    const options = createClientOptions();
+    redisConnection = new Redis(redisUrl, options);
 
-  attachEventHandlers(redisConnection, 'Redis');
+    attachEventHandlers(redisConnection, 'Redis');
 
-  if (options.lazyConnect && redisConnection.status === 'wait') {
-    redisConnection.connect().catch((err) => {
-      const sanitized = sanitizeErrorMessage(err?.message);
-      logger.warn(`⚠️ [Redis] Background connection attempt: ${sanitized}`);
-    });
+    if (options.lazyConnect && redisConnection.status === 'wait') {
+      redisConnection.connect().catch((err) => {
+        const sanitized = sanitizeErrorMessage(err?.message);
+        logger.warn(`⚠️ [Redis] Background connection attempt: ${sanitized}`);
+      });
+    }
+
+    return redisConnection;
+  } catch (err) {
+    logger.warn(`⚠️ [Redis] Client initialization error: ${sanitizeErrorMessage(err.message)}`);
+    return null;
   }
-
-  return redisConnection;
 };
 
 /**

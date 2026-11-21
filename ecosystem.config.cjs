@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "pginfo-backend",
+      name: "pginfo-listings-backend",
       script: "./server.js",
       instances: process.env.PM2_INSTANCES || "max",
       exec_mode: "cluster",
@@ -20,11 +20,11 @@ module.exports = {
       min_uptime: "10s",
       env: {
         NODE_ENV: "development",
-        PORT: 5001,
+        PORT: process.env.PORT || 5001,
       },
       env_production: {
         NODE_ENV: "production",
-        PORT: 5001,
+        PORT: process.env.PORT || 5001,
       },
     },
   ],
