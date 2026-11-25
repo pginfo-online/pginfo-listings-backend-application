@@ -24,7 +24,7 @@ async function checkValidation() {
   const result = updatePropertySchema.safeParse(prop);
   if (!result.success) {
     console.log('Validation failed with errors:');
-    console.log(JSON.stringify(result.error.errors, null, 2));
+    console.log(JSON.stringify(result.error.issues, null, 2));
   } else {
     console.log('Validation PASSED!');
   }

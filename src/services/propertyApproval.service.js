@@ -2,7 +2,9 @@ const Property = require('../models/Property.model');
 const PropertyAudit = require('../modules/properties/models/PropertyAudit.model');
 const notificationTrigger = require('../services/notification/notification.trigger');
 const redisCache = require('./redisCache.service');
-const { NotFoundError } = require('../common/errors');
+const { ConflictError, NotFoundError } = require('../common/errors');
+
+const literalRegex = (text) => new RegExp(text.replace(/[.*+?^\${}()|[\]\\]/g, '\\$&'), 'i');
 
 const invalidateSearchCache = () => {
   redisCache.delByPattern('search:properties:*').catch(() => {});
@@ -40,13 +42,13 @@ const getAllPropertiesForAdmin = async (params = {}) => {
   if (params.cityId) {
     query.cityId = params.cityId;
   } else if (params.city && params.city.trim()) {
-    query.city = new RegExp(params.city.trim(), 'i');
+    query.city = literalRegex(params.city.trim());
   }
 
   if (params.areaId) {
     query.areaId = params.areaId;
   } else if (params.area && params.area.trim()) {
-    query.area = new RegExp(params.area.trim(), 'i');
+    query.area = literalRegex(params.area.trim());
   }
 
   if (params.isVerified !== undefined && params.isVerified !== '' && params.isVerified !== 'all') {
@@ -78,13 +80,13 @@ const getAllPropertiesForAdmin = async (params = {}) => {
     );
   }
 
-  const sort = { createdAt: -1 };
+  let sort = { createdAt: -1, _id: -1 };
   if (params.sortBy) {
     if (params.sortBy === 'oldest') sort.createdAt = 1;
-    else if (params.sortBy === 'price_asc') sort['pricing.expectedPrice'] = 1;
-    else if (params.sortBy === 'price_desc') sort['pricing.expectedPrice'] = -1;
-    else if (params.sortBy === 'quality_desc') sort.dataQualityScore = -1;
-    else if (params.sortBy === 'views_desc') sort.views = -1;
+    else if (params.sortBy === 'price_asc') sort = { 'pricing.expectedPrice': 1, ...sort };
+    else if (params.sortBy === 'price_desc') sort = { 'pricing.expectedPrice': -1, ...sort };
+    else if (params.sortBy === 'quality_desc') sort = { dataQualityScore: -1, ...sort };
+    else if (params.sortBy === 'views_desc') sort = { views: -1, ...sort };
   }
 
   const [properties, total] = await Promise.all([
@@ -119,6 +121,7 @@ const approveProperty = async (propertyId, adminId) => {
   }
 
   const prevStatus = currentProperty.status;
+  if (prevStatus === 'approved') return currentProperty;
   const auditEntry = {
     status: 'approved',
     changedAt: new Date(),
@@ -126,8 +129,8 @@ const approveProperty = async (propertyId, adminId) => {
     reason: 'Approved by admin',
   };
 
-  const property = await Property.findByIdAndUpdate(
-    propertyId,
+  const property = await Property.findOneAndUpdate(
+    { _id: propertyId, status: prevStatus },
     {
       $set: {
         status: 'approved',
@@ -142,6 +145,7 @@ const approveProperty = async (propertyId, adminId) => {
     },
     { new: true }
   ).populate('owner', 'name email phone');
+  if (!property) throw new ConflictError('The listing changed. Reload it and review the current status.');
 
   // Record persistent audit log
   PropertyAudit.create({
@@ -174,6 +178,7 @@ const rejectProperty = async (propertyId, adminId, reason) => {
   }
 
   const prevStatus = currentProperty.status;
+  if (prevStatus === 'rejected') return currentProperty;
   const rejectReason = reason || 'Listing does not meet quality guidelines or verification standards';
   const auditEntry = {
     status: 'rejected',
@@ -182,8 +187,8 @@ const rejectProperty = async (propertyId, adminId, reason) => {
     reason: rejectReason,
   };
 
-  const property = await Property.findByIdAndUpdate(
-    propertyId,
+  const property = await Property.findOneAndUpdate(
+    { _id: propertyId, status: prevStatus },
     {
       $set: {
         status: 'rejected',
@@ -197,6 +202,7 @@ const rejectProperty = async (propertyId, adminId, reason) => {
     },
     { new: true }
   ).populate('owner', 'name email phone');
+  if (!property) throw new ConflictError('The listing changed. Reload it and review the current status.');
 
   PropertyAudit.create({
     propertyId,
@@ -236,8 +242,8 @@ const requestCorrection = async (propertyId, adminId, comments) => {
     reason: commentText,
   };
 
-  const property = await Property.findByIdAndUpdate(
-    propertyId,
+  const property = await Property.findOneAndUpdate(
+    { _id: propertyId, status: prevStatus },
     {
       $set: {
         status: 'correction_required',
@@ -251,6 +257,7 @@ const requestCorrection = async (propertyId, adminId, comments) => {
     },
     { new: true }
   ).populate('owner', 'name email phone');
+  if (!property) throw new ConflictError('The listing changed. Reload it and review the current status.');
 
   PropertyAudit.create({
     propertyId,
@@ -277,6 +284,7 @@ const suspendProperty = async (propertyId, adminId, notes) => {
   }
 
   const prevStatus = currentProperty.status;
+  if (prevStatus === 'suspended') return currentProperty;
   const noteText = notes || 'Suspended by admin';
   const auditEntry = {
     status: 'suspended',
@@ -285,8 +293,8 @@ const suspendProperty = async (propertyId, adminId, notes) => {
     reason: noteText,
   };
 
-  const property = await Property.findByIdAndUpdate(
-    propertyId,
+  const property = await Property.findOneAndUpdate(
+    { _id: propertyId, status: prevStatus },
     {
       $set: {
         status: 'suspended',
@@ -300,6 +308,7 @@ const suspendProperty = async (propertyId, adminId, notes) => {
     },
     { new: true }
   );
+  if (!property) throw new ConflictError('The listing changed. Reload it and review the current status.');
 
   PropertyAudit.create({
     propertyId,
@@ -320,18 +329,17 @@ const suspendProperty = async (propertyId, adminId, notes) => {
 /**
  * Toggle verification badge
  */
-const toggleVerify = async (propertyId) => {
-  const property = await Property.findById(propertyId);
-  if (!property) {
-    throw new NotFoundError('Property not found');
-  }
-
-  property.isVerified = !property.isVerified;
-  property.verifiedAt = property.isVerified ? new Date() : null;
-  await property.save();
-
-
-
+const toggleVerify = async (propertyId, target) => {
+  const current = await Property.findById(propertyId);
+  if (!current) throw new NotFoundError('Property not found');
+  const isVerified = typeof target === 'boolean' ? target : !current.isVerified;
+  if (current.isVerified === isVerified) return current;
+  const property = await Property.findOneAndUpdate(
+    { _id: propertyId, isVerified: current.isVerified ? true : { $ne: true } },
+    { $set: { isVerified, verifiedAt: isVerified ? new Date() : null } },
+    { new: true }
+  );
+  if (!property) throw new ConflictError('The listing changed. Reload it and review its verification status.');
   invalidateSearchCache();
   return property;
 };

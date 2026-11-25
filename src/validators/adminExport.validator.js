@@ -33,7 +33,18 @@ const initiateJobSchema = z.object({
   path: ['startDate'],
 });
 
+const scheduleSchema = z.object({
+  isDaily9AMEnabled: z.boolean().optional(),
+  dataset: datasetSchema.optional(),
+  filters: initiateJobSchema.optional(),
+}).transform(({ filters, ...config }) => {
+  if (!filters) return config;
+  const { dataset, ...filterValues } = filters;
+  return { ...config, filters: filterValues };
+});
+
 module.exports = {
   exportQuerySchema,
   initiateJobSchema,
+  scheduleSchema,
 };

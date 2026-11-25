@@ -24,6 +24,7 @@ class TokenService {
       id: user._id ? user._id.toString() : user.id,
       role: user.role || (Array.isArray(user.roles) ? user.roles[0] : 'tenant'),
       roles: Array.isArray(user.roles) ? user.roles : [user.role || 'tenant'],
+      issuedAtMs: Date.now(),
     };
 
     return jwt.sign(payload, process.env.JWT_SECRET, {
@@ -66,22 +67,9 @@ class TokenService {
     };
   }
 
-  /**
-   * Verify and rotate refresh token
-   * @param {string} userId
-   * @param {string} refreshToken
-   * @returns {Promise<boolean>}
-   */
-  async verifyRefreshToken(userId, refreshToken) {
-    if (!userId || !refreshToken) return false;
-    const cacheKey = `auth:refresh:${userId}:${refreshToken}`;
-
-    try {
-      const stored = await redisCache.get(cacheKey);
-      return !!stored;
-    } catch (_) {
-      return false;
-    }
+  async consumeRefreshToken(userId, refreshToken) {
+    if (!/^[a-f0-9]{24}$/i.test(userId || '') || !/^[a-f0-9]{80}$/i.test(refreshToken || '')) return false;
+    return redisCache.consume(`auth:refresh:${userId}:${refreshToken}`);
   }
 
   /**

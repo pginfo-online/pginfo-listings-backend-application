@@ -4,6 +4,9 @@ const User = require('../models/User.model');
 const asyncHandler = require('../utils/asyncHandler');
 const { hasCapability } = require('../utils/capabilities');
 
+const revoked = (user, token) => user.authTokensInvalidBefore
+  && (token.issuedAtMs || token.iat * 1000 || 0) < user.authTokensInvalidBefore.getTime();
+
 /**
  * Verify JWT and attach user to request
  */
@@ -20,30 +23,26 @@ const protect = asyncHandler(async (req, res, next) => {
     return errorResponse(res, 'Not authorized, no token provided', 401);
   }
 
+  let decoded;
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-password');
-
-    if (!user) {
-      return errorResponse(res, 'User not found', 401);
-    }
-
-    if (!user.isActive) {
-      return errorResponse(res, 'Account has been suspended', 403);
-    }
-
-    // Ensure roles array and role string are fully normalized and auto-healed
-    if (typeof user.toSafeObject === 'function') {
-      const safe = user.toSafeObject();
-      user.roles = safe.roles;
-      user.role = safe.role;
-    }
-
-    req.user = user;
-    next();
-  } catch (error) {
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
     return errorResponse(res, 'Invalid or expired token', 401);
   }
+  if (!decoded || !/^[a-f0-9]{24}$/i.test(decoded.id || '')) return errorResponse(res, 'Invalid token', 401);
+
+  const user = await User.findById(decoded.id).select('+authTokensInvalidBefore');
+  if (!user) return errorResponse(res, 'User not found', 401);
+  if (!user.isActive) return errorResponse(res, 'Account has been suspended', 403);
+  if (revoked(user, decoded)) return errorResponse(res, 'This session has ended. Sign in again.', 401);
+
+  if (typeof user.toSafeObject === 'function') {
+    const safe = user.toSafeObject();
+    user.roles = safe.roles;
+    user.role = safe.role;
+  }
+  req.user = user;
+  next();
 });
 
 /**
@@ -84,8 +83,8 @@ const optionalAuth = asyncHandler(async (req, res, next) => {
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const user = await User.findById(decoded.id).select('-password');
-      if (user?.isActive) {
+      const user = await User.findById(decoded.id).select('+authTokensInvalidBefore');
+      if (user?.isActive && !revoked(user, decoded)) {
         if (!user.roles || user.roles.length === 0) {
           user.roles = [user.role || 'tenant'];
         }

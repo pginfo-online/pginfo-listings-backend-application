@@ -1,6 +1,9 @@
 const asyncHandler = require('../utils/asyncHandler');
 const { successResponse } = require('../utils/apiResponse');
 const City = require('../models/City.model');
+const Area = require('../models/Area.model');
+const Property = require('../models/Property.model');
+const nameMatch = (value) => new RegExp(`^${value.replace(/[.*+?^\${}()|[\]\\]/g, '\\$&')}$`, 'i');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../config/cloudinary');
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -201,7 +204,7 @@ const createCity = asyncHandler(async (req, res) => {
   }
 
   // Check for duplicate name
-  const existing = await City.findOne({ name: { $regex: new RegExp(`^${name.trim()}$`, 'i') } });
+  const existing = await City.findOne({ name: { $regex: nameMatch(name.trim()) } });
   if (existing) {
     return res.status(400).json({ success: false, message: `City "${name.trim()}" already exists` });
   }
@@ -243,7 +246,7 @@ const updateCity = asyncHandler(async (req, res) => {
   // Check name uniqueness if being changed
   if (name && name.trim().toLowerCase() !== city.name.toLowerCase()) {
     const existing = await City.findOne({
-      name: { $regex: new RegExp(`^${name.trim()}$`, 'i') },
+      name: { $regex: nameMatch(name.trim()) },
       _id: { $ne: city._id },
     });
     if (existing) {
@@ -284,10 +287,14 @@ const deleteCity = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'City not found' });
   }
 
-  // Clean up Cloudinary image first
-  await deleteCityImageSafe(city.image?.publicId);
+  const refs = await Promise.all([Area.exists({ city: city._id }),
+    Property.exists({ $or: [{ cityId: city._id }, { city: nameMatch(city.name) }] }),
+    require('../models/Meetup.model').exists({ $or: [{ 'location.cityId': city._id }, { 'location.city': nameMatch(city.name) }] }),
+  ]);
+  if (refs.some(Boolean)) return res.status(409).json({ success: false, message: 'This city is in use. Deactivate it to preserve existing records.' });
 
-  await City.findByIdAndDelete(req.params.id);
+  await city.deleteOne();
+  await deleteCityImageSafe(city.image?.publicId);
   invalidateCityCache();
 
   successResponse(res, 'City deleted successfully');

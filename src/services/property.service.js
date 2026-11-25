@@ -5,7 +5,9 @@ const User = require('../models/User.model');
 const City = require('../models/City.model');
 const Area = require('../models/Area.model');
 const redisCache = require('./redisCache.service');
-const { NotFoundError } = require('../common/errors');
+const { ConflictError, NotFoundError, BadRequestError, ValidationError } = require('../common/errors');
+const { logger } = require('../utils/logger');
+const PropertyAudit = require('../modules/properties/models/PropertyAudit.model');
 
 const invalidateSearchCache = () => {
   redisCache.delByPattern('search:properties:*').catch(() => {});
@@ -237,6 +239,9 @@ const canonicalizePropertyLocation = async (data) => {
     }
   }
 
+  if (!cityDoc) {
+    throw new ValidationError('Choose an active city from the location directory.', [{ field: 'city', message: 'City is unavailable or inactive.' }]);
+  }
   if (cityDoc) {
     data.cityId = cityDoc._id;
     data.city = cityDoc.name;
@@ -247,15 +252,15 @@ const canonicalizePropertyLocation = async (data) => {
       const areaDoc = await Area.findOne({ _id: data.areaId, city: data.cityId, isActive: true })
         .select('_id name')
         .lean();
-      if (areaDoc) {
-        data.area = areaDoc.name;
-      }
+      if (!areaDoc) throw new BadRequestError('Choose an active area in the selected city.');
+      data.area = areaDoc.name;
     } else if (data.area) {
       const cleanArea = String(data.area).trim();
       const escapedArea = cleanArea.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       let areaDoc = await Area.findOne({ city: data.cityId, name: new RegExp(`^${escapedArea}$`, 'i') })
-        .select('_id name')
+        .select('_id name isActive')
         .lean();
+      if (areaDoc?.isActive === false) throw new BadRequestError('This area is inactive. Choose another area or reactivate it.');
       if (!areaDoc) {
         const slugUtil = require('../common/utils/slug.util');
         areaDoc = await Area.create({
@@ -277,7 +282,7 @@ const canonicalizePropertyLocation = async (data) => {
 /**
  * Create a new property listing (PG, Residential Rental, Commercial)
  */
-const createProperty = async (ownerId, data) => {
+const createProperty = async (ownerId, data, actorId = ownerId) => {
   const title = (data.title || data.name || '').trim();
   const city = (data.city || '').trim();
   const area = (data.area || '').trim();
@@ -361,8 +366,8 @@ const createProperty = async (ownerId, data) => {
     }
   }
 
-  const finalLat = locationData.latitude || data.latitude;
-  const finalLng = locationData.longitude || data.longitude;
+  const finalLat = locationData.latitude ?? data.latitude;
+  const finalLng = locationData.longitude ?? data.longitude;
   const nearbyPlaces = Array.isArray(data.nearbyPlaces) ? data.nearbyPlaces : [];
 
   sanitizePropertyPayload(data);
@@ -379,6 +384,7 @@ const createProperty = async (ownerId, data) => {
     owner: ownerId,
     status: data.status === 'draft' ? 'draft' : 'submitted',
     nearbyPlaces,
+    location: null,
     ...locationData,
   };
 
@@ -387,7 +393,7 @@ const createProperty = async (ownerId, data) => {
     {
       status: propertyPayload.status,
       changedAt: new Date(),
-      changedBy: ownerId,
+      changedBy: actorId,
       reason: 'Property listing created',
     },
   ];
@@ -417,18 +423,12 @@ const createProperty = async (ownerId, data) => {
     }
   }
 
+  propertyPayload.dataQualityScore = computeDataQualityScore(propertyPayload);
   const property = await Property.create(propertyPayload);
   invalidateSearchCache();
 
-
-
-  // 4. Auto-compute quality score
-  const score = computeDataQualityScore(property.toObject());
-  property.dataQualityScore = score;
-  await Property.findByIdAndUpdate(property._id, { dataQualityScore: score });
-
   // 5. Auto-fetch nearby places in background if empty
-  if (nearbyPlaces.length === 0 && finalLat && finalLng) {
+  if (nearbyPlaces.length === 0 && finalLat != null && finalLng != null) {
     setImmediate(async () => {
       try {
         const { fetchNearbyPlacesForPG } = require('../utils/nearbyPlaces');
@@ -442,41 +442,8 @@ const createProperty = async (ownerId, data) => {
     });
   }
 
-  // 6. Ensure area is registered in Area collection
-  if (data.cityId && area) {
-    try {
-      const Area = require('../models/Area.model');
-      const City = require('../models/City.model');
-      const cityDoc = await City.findById(data.cityId).select('name').lean();
-      if (cityDoc) {
-        const slug = area.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-        await Area.findOneAndUpdate(
-          {
-            city: data.cityId,
-            name: { $regex: new RegExp(`^${escapeRegex(area)}$`, 'i') },
-          },
-          {
-            $setOnInsert: {
-              city: data.cityId,
-              cityName: cityDoc.name,
-              name: area,
-              slug,
-              isActive: true,
-              isAutoCreated: true,
-              source: 'user',
-              order: 99,
-            },
-          },
-          { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
-      }
-    } catch (areaErr) {
-      console.error('Area ensure error in createProperty:', areaErr.message);
-    }
-  }
-
   // 7. Auto-upgrade user role: add 'owner' if tenant
-  await User.findByIdAndUpdate(ownerId, {
+  await User.updateOne({ _id: ownerId, role: { $ne: 'admin' }, roles: { $ne: 'admin' } }, {
     $addToSet: { roles: 'owner' },
   });
 
@@ -508,7 +475,7 @@ const updateProperty = async (propertyId, userId, data, userRole = 'owner') => {
   const addressChanged = ['city', 'area', 'address'].some(
     (field) => data[field] !== undefined && data[field] !== property[field]
   );
-  if (addressChanged || data.cityId) {
+  if (data.cityId || ['city', 'area'].some((field) => data[field] !== undefined && data[field] !== property[field])) {
     const location = {
       city: data.city ?? property.city,
       area: data.area ?? property.area,
@@ -561,14 +528,17 @@ const updateProperty = async (propertyId, userId, data, userRole = 'owner') => {
       data.correctionComments = null;
     }
 
-    const updated = await Property.findByIdAndUpdate(
-      propertyId,
+    const updated = await Property.findOneAndUpdate(
+      { ...query, updatedAt: property.updatedAt },
       { $set: data },
       { new: true, runValidators: true }
     );
+    if (!updated) throw new ConflictError('The listing changed while saving. Reload the record and review your changes.');
+    if (userRole === 'admin') {
+      await PropertyAudit.create({ propertyId, action: 'updated', previousStatus: property.status, newStatus: updated.status,
+        actor: userId, actorRole: 'admin' }).catch(() => logger.error(`Could not record property update audit for ${propertyId}`));
+    }
     invalidateSearchCache();
-
-
 
     return { requestCreated: false, property: updated };
   }
@@ -608,6 +578,15 @@ const updateProperty = async (propertyId, userId, data, userRole = 'owner') => {
  */
 const deleteProperty = async (propertyId, userId, role) => {
   const query = role === 'admin' ? { _id: propertyId } : { _id: propertyId, owner: userId };
+  if (role === 'admin') {
+    const refs = await Promise.all([
+      require('../models/Lead.model').exists({ $or: [{ property: propertyId }, { pg: propertyId }] }),
+      require('../models/VisitRequest.model').exists({ $or: [{ property: propertyId }, { pg: propertyId }] }),
+      require('../models/RentalBooking.model').exists({ property: propertyId }),
+      PropertyUpdateRequest.exists({ property: propertyId, status: { $in: ['pending', 'correction_required'] } }),
+    ]);
+    if (refs.some(Boolean)) throw new ConflictError('This listing has operational records. Suspend it to preserve them.');
+  }
   const property = await Property.findOneAndDelete(query);
   if (!property) {
     const err = new Error('Property not found or unauthorized');
@@ -636,7 +615,7 @@ const getPropertyById = async (idOrSlug, user = null) => {
     .populate('cityId', 'name slug state')
     .populate('areaId', 'name slug');
 
-  if (property?.status === 'approved' && String(property.owner?._id) !== String(user?._id)) {
+  if (!isAdmin && property?.status === 'approved' && String(property.owner?._id) !== String(user?._id)) {
     // Fire-and-forget asynchronous view count increment
     Property.updateOne({ _id: property._id, status: 'approved' }, { $inc: { views: 1 } }).exec().catch(() => {});
   }

@@ -30,14 +30,15 @@ async function testRentalListings() {
 
   const original = {
     findOne: Property.findOne,
-    update: Property.findByIdAndUpdate,
+    update: Property.findOneAndUpdate,
     aggregate: Property.aggregate,
     cancel: PropertyUpdateRequest.updateMany,
     save: PropertyUpdateRequest.prototype.save,
   };
   let status = 'submitted';
+  const updatedAt = new Date("2025-01-02T10:00:00Z");
   const stored = {
-    _id: id, owner, category: 'commercial', purpose: 'rent',
+    _id: id, owner, updatedAt, category: 'commercial', purpose: 'rent',
     pricing: { expectedPrice: 25000, maintenanceCharges: 1500 },
     commercialDetails: { commercialSubtype: 'office_space', carpetAreaSqFt: 800 },
     toObject() { return { ...this, status }; },
@@ -47,7 +48,10 @@ async function testRentalListings() {
       assert.deepStrictEqual(filter, { _id: id, owner });
       return { ...stored, status };
     };
-    Property.findByIdAndUpdate = async (_id, update) => update.$set;
+    Property.findOneAndUpdate = async (filter, update) => {
+      assert.deepStrictEqual(filter, { _id: id, owner, updatedAt });
+      return update.$set;
+    };
     Property.aggregate = async ([scope]) => {
       assert.deepStrictEqual(scope, { $match: { owner } });
       return [];
@@ -76,7 +80,7 @@ async function testRentalListings() {
     await getOwnerListingAnalytics(owner);
   } finally {
     Property.findOne = original.findOne;
-    Property.findByIdAndUpdate = original.update;
+    Property.findOneAndUpdate = original.update;
     Property.aggregate = original.aggregate;
     PropertyUpdateRequest.updateMany = original.cancel;
     PropertyUpdateRequest.prototype.save = original.save;

@@ -248,4 +248,4 @@ const findOrCreateArea = asyncHandler(async (req, res) => {
   );
 });
 
-module.exports = { searchAreas, findOrCreateArea };
+module.exports = { searchAreas, findOrCreateArea, invalidateAreaCache };

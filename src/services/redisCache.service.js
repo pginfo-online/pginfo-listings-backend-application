@@ -138,6 +138,20 @@ class RedisCacheService {
     }
   }
 
+  /** Remove a single-use value and report whether it existed. Redis 6.2+ supports GETDEL. */
+  async consume(key) {
+    const fullKey = this._formatKey(key);
+    const client = this._getClient();
+    if (!client) {
+      if (!memoryFallback.get(fullKey)) return false;
+      return memoryFallback.del(fullKey);
+    }
+    const data = await withTimeout(client.getdel(fullKey));
+    if (data) return true;
+    if (!memoryFallback.get(fullKey)) return false;
+    return memoryFallback.del(fullKey);
+  }
+
   /**
    * Set cached JSON object with TTL in seconds
    * @param {string} key

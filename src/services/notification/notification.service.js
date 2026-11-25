@@ -46,29 +46,23 @@ async function resolveAudience(audience) {
 
     case 'role': {
       if (!targetRoles || targetRoles.length === 0) return [];
-      const users = await User.find({ role: { $in: targetRoles }, isActive: true })
+      const users = await User.find({ $or: [{ role: { $in: targetRoles } }, { roles: { $in: targetRoles } }], isActive: true })
         .select('_id').lean();
       return users.map(u => u._id.toString());
     }
 
     case 'specific': {
       if (!targetUserIds || targetUserIds.length === 0) return [];
-      return targetUserIds
-        .map(id => {
-          if (!id) return null;
-          if (typeof id === 'object') {
-            if (id._id) return id._id.toString();
-            if (id.id) return id.id.toString();
-          }
-          return id.toString();
-        })
-        .filter(Boolean);
+      const ids = targetUserIds.map((id) => String(id?._id || id || '')).filter((id) => /^[a-f0-9]{24}$/i.test(id));
+      const users = await User.find({ _id: { $in: ids }, isActive: true }).select('_id').lean();
+      return users.map((user) => String(user._id));
     }
 
     case 'city': {
-      if (!targetCity) return [];
-      const users = await User.find({ isActive: true }).select('_id').lean();
-      return users.map(u => u._id.toString());
+      if (typeof targetCity !== 'string' || !targetCity.trim()) return [];
+      const city = targetCity.trim().replace(/[.*+?^\${}()|[\]\\]/g, '\\$&');
+      const users = await User.find({ city: new RegExp(`^${city}$`, 'i'), isActive: true }).select('_id').lean();
+      return users.map((user) => String(user._id));
     }
 
     default:
@@ -213,8 +207,10 @@ async function createInboxItems(userIds, notificationDoc) {
 
   const now = new Date();
   const ops = userIds.map(userId => ({
-    insertOne: {
-      document: {
+    updateOne: {
+      filter: { user: userId, notification: notificationDoc._id },
+      upsert: true,
+      update: { $setOnInsert: {
         user:         userId,
         notification: notificationDoc._id,
         title:        notificationDoc.title,
@@ -230,7 +226,7 @@ async function createInboxItems(userIds, notificationDoc) {
         isDeleted: false,
         createdAt: now,
         updatedAt: now,
-      },
+      } },
     },
   }));
 
@@ -264,16 +260,20 @@ async function updateStats(notificationId, delta) {
  *
  * @param {Object} notificationDoc - Mongoose Notification document or plain object
  */
-async function send(notificationDoc) {
-  const notifId = notificationDoc._id.toString();
+async function send(notification, expected = ['draft', 'scheduled'], dueBefore) {
+  const notifId = notification._id.toString();
+  const notificationDoc = await Notification.findOneAndUpdate(
+    { _id: notifId, status: { $in: expected }, ...(dueBefore && { scheduledAt: { $lte: dueBefore } }) },
+    { $set: { status: 'sending', errorMessage: null } },
+    { new: true }
+  );
+  if (!notificationDoc) return;
+
   logger.info(`[NotificationService] Starting send for notification ${notifId} (type: ${notificationDoc.type})`);
 
   try {
-    // 1. Update status to sending
-    await Notification.findByIdAndUpdate(notifId, { status: 'sending' });
-
     // 2. Resolve audience
-    let userIds = await resolveAudience(notificationDoc.audience);
+    const userIds = await resolveAudience(notificationDoc.audience);
     logger.info(`[NotificationService] Resolved ${userIds.length} users for ${notifId}`);
 
     if (userIds.length === 0) {

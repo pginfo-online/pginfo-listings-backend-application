@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const { pipeline } = require('node:stream/promises');
+const { Readable } = require('node:stream');
 const asyncHandler = require('../utils/asyncHandler');
 const { successResponse, errorResponse, paginatedResponse } = require('../utils/apiResponse');
 const Property = require('../models/Property.model');
@@ -9,7 +11,7 @@ const ExportJob = require('../models/ExportJob.model');
 const ExportSchedule = require('../models/ExportSchedule.model');
 const excelService = require('../services/excel.service');
 const { executeScheduledExport } = require('../services/export.scheduler');
-const { cloudinary } = require('../config/cloudinary');
+const exportStorage = require('../services/exportStorage.service');
 const { logger } = require('../utils/logger');
 
 /**
@@ -47,28 +49,14 @@ const runBackgroundExport = async (jobId, dataset, query) => {
         .catch(reject);
     });
 
-    // Upload to Cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(
-        tempFilePath,
-        {
-          resource_type: 'raw',
-          folder: 'pginfo/exports',
-          public_id: `export_${dataset}_${jobId}_${Date.now()}.xlsx`,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-    });
+    const uploadResult = await exportStorage.upload(tempFilePath, 'pginfo/exports', `export_${dataset}_${jobId}.xlsx`);
 
     const fileSize = fs.existsSync(tempFilePath) ? fs.statSync(tempFilePath).size : 0;
 
     await ExportJob.findByIdAndUpdate(jobId, {
       status: 'completed',
       progress: 100,
-      fileUrl: uploadResult.secure_url,
+      filePublicId: uploadResult.public_id,
       fileSize,
       completedAt: new Date(),
     });
@@ -78,7 +66,7 @@ const runBackgroundExport = async (jobId, dataset, query) => {
     logger.error(`Error in runBackgroundExport for job ${jobId}: ${err.stack}`);
     await ExportJob.findByIdAndUpdate(jobId, {
       status: 'failed',
-      error: err.message || 'Export generation failed',
+      error: 'Export generation failed. See server logs for the job reference.',
     });
   } finally {
     if (fs.existsSync(tempFilePath)) {
@@ -112,7 +100,7 @@ const directExportPGs = asyncHandler(async (req, res) => {
     if (!res.headersSent) {
       return errorResponse(res, 'Failed to generate Excel export file', 500);
     }
-    res.end();
+    res.destroy(err);
   }
 });
 
@@ -156,8 +144,8 @@ const initiateExportJob = asyncHandler(async (req, res) => {
  * @desc  Retrieve list of export jobs
  */
 const getExportJobs = asyncHandler(async (req, res) => {
-  const page = Number(req.query.page) || 1;
-  const limit = Math.min(Number(req.query.limit) || 15, 50);
+  const page = Math.min(10000, Math.max(1, parseInt(req.query.page, 10) || 1));
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 15));
   const skip = (page - 1) * limit;
 
   const filter = {};
@@ -194,22 +182,43 @@ const getExportJobs = asyncHandler(async (req, res) => {
  * @route GET /api/v1/admin/pgs/export/jobs/:id
  */
 const getExportJobStatus = asyncHandler(async (req, res) => {
-  const job = await ExportJob.findById(req.params.id).populate('admin', 'name email');
+  const job = await ExportJob.findById(req.params.id).select('+filePublicId').populate('admin', 'name email').lean();
   if (!job) {
     return res.status(404).json({ success: false, message: 'Export job not found' });
   }
-  return successResponse(res, 'Export job status retrieved successfully', { job });
+  const { filePublicId, ...details } = job;
+  return successResponse(res, 'Export job status retrieved successfully', { job: { ...details, downloadable: !!filePublicId } });
 });
 
 /**
  * @route DELETE /api/v1/admin/pgs/export/jobs/:id
  */
 const deleteExportJob = asyncHandler(async (req, res) => {
-  const job = await ExportJob.findByIdAndDelete(req.params.id);
-  if (!job) {
-    return res.status(404).json({ success: false, message: 'Export job not found' });
-  }
+  const job = await ExportJob.findById(req.params.id).select('+filePublicId');
+  if (!job) return errorResponse(res, 'Export job not found', 404);
+  if (['pending', 'processing'].includes(job.status)) return errorResponse(res, 'Wait for the export job to finish before deleting it.', 409);
+  if (job.filePublicId) await exportStorage.remove(job.filePublicId);
+  await job.deleteOne();
   return successResponse(res, 'Export job record deleted successfully');
+});
+
+const downloadExportJob = asyncHandler(async (req, res) => {
+  const job = await ExportJob.findById(req.params.id).select('+filePublicId').lean();
+  if (job?.status !== 'completed' || !job.filePublicId) {
+    return errorResponse(res, 'No private file is available for this export. Generate a new export.', 404);
+  }
+  const abort = new AbortController();
+  res.once('close', () => abort.abort());
+  const source = await fetch(exportStorage.downloadUrl(job.filePublicId), {
+    signal: AbortSignal.any([abort.signal, AbortSignal.timeout(120000)]),
+    redirect: 'error',
+  });
+  if (!source.ok || !source.body) return errorResponse(res, 'The export file could not be retrieved.', 502);
+  res.attachment(`${job.dataset}_export_${job._id}.xlsx`);
+  res.type('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  await pipeline(Readable.fromWeb(source.body), res).catch((error) => {
+    if (!abort.signal.aborted && !res.headersSent) throw error;
+  });
 });
 
 /**
@@ -219,25 +228,13 @@ const deleteExportJob = asyncHandler(async (req, res) => {
 const getExportScheduleConfig = asyncHandler(async (req, res) => {
   const schedule = await ExportSchedule.getOrCreateSchedule();
 
-  // Compute the next eligible weekly run at 9:00 AM IST.
-  const now = new Date();
-  const weekInMs = 7 * 24 * 60 * 60 * 1000;
-  let nextRun = schedule.lastCompletedAt
-    ? new Date(schedule.lastCompletedAt.getTime() + weekInMs)
-    : new Date(now);
-  // Convert to IST offset (+5:30)
-  const istOffset = 5.5 * 60 * 60 * 1000;
-  const istNow = new Date(now.getTime() + istOffset);
-
-  const next9AM_IST = new Date(istNow);
-  next9AM_IST.setUTCHours(3, 30, 0, 0);
-
-  if (!schedule.lastCompletedAt && now >= next9AM_IST) {
-    next9AM_IST.setUTCDate(next9AM_IST.getUTCDate() + 1);
-  }
-
-  if (!schedule.lastCompletedAt) nextRun = next9AM_IST;
-  else if (nextRun < now) nextRun = next9AM_IST > now ? next9AM_IST : new Date(next9AM_IST.getTime() + 24 * 60 * 60 * 1000);
+  const day = 86400000;
+  const interval = 7 * day;
+  const offset = 19800000;
+  const start = Math.max(Date.now(), schedule.lastCompletedAt ? schedule.lastCompletedAt.getTime() + interval : 0);
+  const boundary = Math.floor((start + offset) / day) * day - offset + 9 * 3600000;
+  const nextRun = schedule.isDaily9AMEnabled && process.env.ENABLE_EXPORT_SCHEDULER === 'true'
+    ? new Date(boundary < start ? boundary + day : boundary) : null;
 
   return successResponse(res, 'Export schedule retrieved successfully', {
     schedule: {
@@ -279,6 +276,7 @@ const triggerScheduledExportNow = asyncHandler(async (req, res) => {
     user: req.user,
   });
 
+  if (!result) return errorResponse(res, 'An export is already running.', 409);
   return successResponse(res, 'Scheduled export task executed successfully', result);
 });
 
@@ -288,6 +286,7 @@ module.exports = {
   getExportJobs,
   getExportJobStatus,
   deleteExportJob,
+  downloadExportJob,
   getExportScheduleConfig,
   updateExportScheduleConfig,
   triggerScheduledExportNow,

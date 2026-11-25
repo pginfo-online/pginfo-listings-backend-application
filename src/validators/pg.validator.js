@@ -1,4 +1,5 @@
 const { z } = require('zod');
+const partialUpdate = require('./partialUpdate');
 
 // ─── Shared helpers ────────────────────────────────────────────────────────────
 const nullableCoercedNumber = z.preprocess((val) => {
@@ -6,7 +7,7 @@ const nullableCoercedNumber = z.preprocess((val) => {
   if (val === undefined) return undefined;
   const num = Number(val);
   return isNaN(num) ? val : num;
-}, z.number().min(0).nullable().optional());
+}, z.number().min(0).nullable().optional()).optional();
 
 // ─── Sub-schemas ───────────────────────────────────────────────────────────────
 
@@ -164,7 +165,7 @@ const createPGSchema = z.object({
   dataQualityScore: z.coerce.number().min(1).max(5).nullable().optional(),
 });
 
-const updatePGSchema = createPGSchema.partial();
+const updatePGSchema = partialUpdate(createPGSchema);
 
 // ─── Search Schema ─────────────────────────────────────────────────────────────
 const pgSearchSchema = z.object({

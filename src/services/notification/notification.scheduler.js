@@ -23,13 +23,7 @@ async function processScheduledNotifications() {
     logger.info(`[Scheduler] Processing ${due.length} scheduled notification(s)`);
 
     for (const notif of due) {
-      const updated = await Notification.findOneAndUpdate(
-        { _id: notif._id, status: 'scheduled' },
-        { status: 'sending' },
-        { new: true }
-      );
-
-      if (updated) await notificationService.send(updated);
+      await notificationService.send(notif, ['scheduled'], new Date());
     }
   } catch (err) {
     logger.error(`[Scheduler] processScheduledNotifications error: ${err.message}`);

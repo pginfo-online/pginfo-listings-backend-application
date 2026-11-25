@@ -28,12 +28,14 @@
     "export:pune": "node src/scripts/exportCityPgData.js --city=Pune",
     "export:city": "node src/scripts/exportCityPgData.js",
     "test": "node test/management_removed.test.js",
-    "test:redis": "node test/redis.test.js"
+    "test:redis": "node test/redis.test.js",
+    "seed:admin": "node src/scripts/seedAdmin.js",
+    "test:admin": "node --test test/admin_contracts.test.js"
   },
   "dependencies": {
     "axios": "^1.18.1",
     "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^2.11.0",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
@@ -48,10 +50,9 @@
     "mongoose": "^8.5.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "multer-storage-cloudinary": "^4.0.0",
     "node-cron": "^4.6.0",
     "resend": "^6.14.0",
-    "zod": "^3.23.8"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
@@ -66,5 +67,14 @@
     "node": ">=18.0.0"
   },
   "author": "PGinfo.online",
-  "license": "MIT"
+  "license": "MIT",
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    },
+    "qs": "6.17.1",
+    "nodemon": {
+      "minimatch": "11.0.9"
+    }
+  }
 }

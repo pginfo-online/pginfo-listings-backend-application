@@ -4,7 +4,7 @@ const cron = require('node-cron');
 const ExportSchedule = require('../models/ExportSchedule.model');
 const ExportJob = require('../models/ExportJob.model');
 const excelService = require('./excel.service');
-const { cloudinary } = require('../config/cloudinary');
+const exportStorage = require('./exportStorage.service');
 const { logger } = require('../utils/logger');
 
 const WEEK_IN_MS = 7 * 24 * 60 * 60 * 1000;
@@ -97,21 +97,7 @@ const executeScheduledExport = async (options = {}) => {
         .catch(reject);
     });
 
-    // Upload Excel spreadsheet to Cloudinary
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload(
-        tempFilePath,
-        {
-          resource_type: 'raw',
-          folder: 'pginfo/exports/scheduled',
-          public_id: `scheduled_export_${dataset}_${new Date().toISOString().slice(0, 10)}_${Date.now()}.xlsx`,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-    });
+    const uploadResult = await exportStorage.upload(tempFilePath, 'pginfo/exports/scheduled', `scheduled_export_${dataset}_${job._id}.xlsx`);
 
     const fileSize = fs.existsSync(tempFilePath) ? fs.statSync(tempFilePath).size : 0;
 
@@ -119,7 +105,7 @@ const executeScheduledExport = async (options = {}) => {
     await ExportJob.findByIdAndUpdate(job._id, {
       status: 'completed',
       progress: 100,
-      fileUrl: uploadResult.secure_url,
+      filePublicId: uploadResult.public_id,
       fileSize,
       completedAt: new Date(),
     });
@@ -132,14 +118,14 @@ const executeScheduledExport = async (options = {}) => {
     scheduleConfig.lastRunError = null;
     await scheduleConfig.save();
 
-    logger.info(`[ExportScheduler] ✓ Weekly export completed successfully! File: ${uploadResult.secure_url}`);
-    return { job, fileUrl: uploadResult.secure_url };
+    logger.info('[ExportScheduler] Weekly export completed successfully');
+    return { jobId: job._id };
   } catch (err) {
     logger.error(`[ExportScheduler] ✗ Daily export failed: ${err.message}`);
 
     await ExportJob.findByIdAndUpdate(job._id, {
       status: 'failed',
-      error: err.message || 'Scheduled export generation failed',
+      error: 'Scheduled export generation failed. See server logs for the job reference.',
     });
 
     scheduleConfig.lastRunStatus = 'failed';

@@ -41,7 +41,7 @@ const errorHandler = (err, req, res, next) => {
       errorCode = ErrorCodes.RESOURCE_CONFLICT;
       const field = err.keyValue ? Object.keys(err.keyValue)[0] : 'record';
       message = `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
-      details = { field, value: err.keyValue ? err.keyValue[field] : undefined };
+      details = { field };
     }
 
     // Mongoose cast error (invalid ObjectId)
@@ -76,20 +76,13 @@ const errorHandler = (err, req, res, next) => {
     }
 
     const requestId = req.id || req.headers['x-request-id'] || 'n/a';
-    logger.error(`[${requestId}] ${req.method} ${req.originalUrl} → ${statusCode} [${errorCode}]: ${message}`);
-
-    // CORS headers on error responses
-    const origin = req.headers.origin;
-    if (origin) {
-      res.header('Access-Control-Allow-Origin', origin);
-      res.header('Access-Control-Allow-Credentials', 'true');
-    }
+    logger.error(`[${requestId}] ${req.method} ${req.path} → ${statusCode} [${errorCode}]`);
 
     return res.status(statusCode).json({
       success: false,
       errorCode,
-      message,
-      ...(details && { details }),
+      message: statusCode >= 500 ? 'An unexpected internal error occurred' : message,
+      ...(statusCode < 500 && details && { details }),
       requestId,
       ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
     });

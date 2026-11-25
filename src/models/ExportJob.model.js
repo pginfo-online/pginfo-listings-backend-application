@@ -28,9 +28,8 @@ const exportJobSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
-    fileUrl: {
-      type: String,
-    },
+    fileUrl: { type: String, select: false }, // Legacy public exports require storage-side removal.
+    filePublicId: { type: String, select: false },
     fileSize: {
       type: Number, // in bytes
     },

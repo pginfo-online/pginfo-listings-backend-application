@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+morgan.token('url', (req) => (req.originalUrl || req.url).split('?')[0]);
 const compression = require('compression');
 const mongoSanitize = require('express-mongo-sanitize');
 const rateLimit = require('express-rate-limit');
@@ -262,9 +263,8 @@ const startServer = async () => {
     if (isPrimaryInstance && schedulersEnabled) {
       if (process.env.ENABLE_SAVED_SEARCH_ALERTS === 'true') startSavedSearchAlerts();
       logger.info('🕒 Starting background schedulers on primary instance...');
-     // startScheduler();
-    //  startExportScheduler();
-     // logger.info('✅ Background schedulers active (notification, export)');
+      if (process.env.ENABLE_NOTIFICATION_SCHEDULER === 'true') startScheduler();
+      if (process.env.ENABLE_EXPORT_SCHEDULER === 'true') startExportScheduler();
 
     } else if (!isPrimaryInstance) {
       logger.info(`ℹ️ Schedulers skipped on worker instance ${process.env.NODE_APP_INSTANCE}`);

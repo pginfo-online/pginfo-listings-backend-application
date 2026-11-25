@@ -418,7 +418,7 @@ const getMeetupById = async (id, viewer = null) => {
     throw err;
   }
 
-  if (isMeetupLive(meetup)) {
+  if (viewerRole !== 'admin' && isMeetupLive(meetup)) {
     Meetup.findByIdAndUpdate(id, { $inc: { 'analytics.views': 1 } }).exec().catch(() => {});
   }
 
@@ -749,7 +749,7 @@ const getMeetupParticipants = async (meetupId, userId, role, query = {}) => {
     MeetupParticipant.countDocuments(filter),
   ]);
 
-  return { participants, total, page: Number(page), limit: Number(limit) };
+  return { participants, total, page: Number(page), limit: Number(limit), totalPages: Math.ceil(total / Number(limit)) };
 };
 
 // ─── 15. My Meetups (Owner) ───────────────────────────────────────────────────
@@ -773,15 +773,21 @@ const rsvpMeetup = async (meetupId, userId, rsvpStatus) => {
 };
 
 // ─── 17. Admin: Get All ───────────────────────────────────────────────────────
-const adminGetAllMeetups = async (params = {}) => {
-  const { status, category, city, page = 1, limit = 20 } = params;
-  const query = {};
-  if (status) query.status = status;
-  if (category) query.category = category;
-  if (city) query['location.city'] = { $regex: new RegExp(city, 'i') };
+const literalSearch = (value) => new RegExp(value.trim().slice(0, 150).replace(/[.*+?^\${}()|[\]\\]/g, '\\$&'), 'i');
 
-  const parsedPage  = Math.max(1, parseInt(page, 10));
-  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit, 10)));
+const adminGetAllMeetups = async (params = {}) => {
+  const { status, category, city, search, page = 1, limit = 20 } = params;
+  const query = {};
+  if (typeof status === 'string') query.status = status;
+  if (typeof category === 'string') {
+    query.category = mongoose.isValidObjectId(category)
+      ? { $in: [category, new mongoose.Types.ObjectId(category)] } : category;
+  }
+  if (typeof city === 'string' && city.trim()) query['location.city'] = literalSearch(city);
+  if (typeof search === 'string' && search.trim()) query.title = literalSearch(search);
+
+  const parsedPage = Math.min(10000, Math.max(1, parseInt(page, 10) || 1));
+  const parsedLimit = Math.min(100, Math.max(1, parseInt(limit, 10) || 20));
   const skip = (parsedPage - 1) * parsedLimit;
 
   const [rawMeetups, total] = await Promise.all([
@@ -828,7 +834,7 @@ const adminLifecycleTransition = async (meetupId, newStatus, adminId, reason = n
   const meetup = await Meetup.findById(meetupId);
   if (!meetup) { const e = new Error('Meetup not found'); e.statusCode = 404; throw e; }
 
-  const approvedStatuses = ['published', 'upcoming', 'ongoing', 'completed', 'repeating', 'paused'];
+  const approvedStatuses = ['approved', 'published', 'upcoming', 'ongoing', 'completed', 'repeating', 'paused'];
   const isApproving = approvedStatuses.includes(newStatus);
 
   meetup.status = newStatus;

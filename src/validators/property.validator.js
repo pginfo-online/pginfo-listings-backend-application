@@ -1,4 +1,5 @@
 const { z } = require('zod');
+const partialUpdate = require('./partialUpdate');
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const nullableCoercedNumber = z.preprocess((val) => {
@@ -6,13 +7,13 @@ const nullableCoercedNumber = z.preprocess((val) => {
   if (val === undefined) return undefined;
   const num = Number(val);
   return isNaN(num) ? val : num;
-}, z.number().min(0).nullable().optional());
+}, z.number().min(0).nullable().optional()).optional();
 
 const requiredCoercedNumber = (msg = 'Valid number required', min = 0) =>
   z.preprocess((val) => {
     const num = Number(val);
     return isNaN(num) ? val : num;
-  }, z.number({ required_error: msg, invalid_type_error: msg }).min(min, msg));
+  }, z.number({ error: msg }).min(min, msg));
 
 // ─── Media & Sub-schemas ──────────────────────────────────────────────────────
 
@@ -427,23 +428,20 @@ const createPropertySchema = z.object(basePropertyFields).superRefine((data, ctx
 
 // ─── Update Property Schema ───────────────────────────────────────────────────
 
-const updatePropertySchema = z.object({
+const updatePropertySchema = partialUpdate(z.object({
   ...basePropertyFields,
   title: basePropertyFields.title.optional(),
   city: basePropertyFields.city.optional(),
   area: basePropertyFields.area.optional(),
   address: basePropertyFields.address.optional(),
   contactPhone: basePropertyFields.contactPhone.optional(),
-  pricing: basePropertyFields.pricing.partial().nullable().optional(),
+  pricing: partialUpdate(basePropertyFields.pricing).nullable().optional(),
   category: basePropertyFields.category.optional(),
   purpose: basePropertyFields.purpose.optional(),
-  pgDetails: pgDetailsSchema.extend({
-    roomConfigs: z.array(roomConfigSchema).optional(),
-  }).partial().nullable().optional(),
-  residentialDetails: residentialDetailsSchema.partial().nullable().optional(),
-  commercialDetails: commercialDetailsSchema.partial().nullable().optional(),
-
-});
+  pgDetails: partialUpdate(pgDetailsSchema.extend({ roomConfigs: z.array(roomConfigSchema).optional() })).nullable().optional(),
+  residentialDetails: partialUpdate(residentialDetailsSchema).nullable().optional(),
+  commercialDetails: partialUpdate(commercialDetailsSchema).nullable().optional(),
+}));
 
 // ─── Search Query Schema ──────────────────────────────────────────────────────
 

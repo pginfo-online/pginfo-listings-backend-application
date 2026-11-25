@@ -72,7 +72,7 @@ exports.createNotification = asyncHandler(async (req, res) => {
  */
 exports.getNotifications = asyncHandler(async (req, res) => {
   const page  = Math.max(1, parseInt(req.query.page)  || 1);
-  const limit = Math.min(50, parseInt(req.query.limit) || 20);
+  const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
   const skip  = (page - 1) * limit;
 
   const filter = {};
@@ -80,14 +80,14 @@ exports.getNotifications = asyncHandler(async (req, res) => {
   if (req.query.type)   filter.type   = req.query.type;
 
   if (req.query.search) {
-    const rx = new RegExp(req.query.search, 'i');
+    const rx = new RegExp(String(req.query.search).slice(0, 150).replace(/[.*+?^\${}()|[\]\\]/g, '\\$&'), 'i');
     filter.$or = [{ title: rx }, { body: rx }];
   }
 
   if (req.query.from || req.query.to) {
     filter.createdAt = {};
     if (req.query.from) filter.createdAt.$gte = new Date(req.query.from);
-    if (req.query.to)   filter.createdAt.$lte = new Date(req.query.to);
+    if (req.query.to) filter.createdAt.$lt = new Date(Date.parse(req.query.to) + 86400000);
   }
 
   const [items, total] = await Promise.all([
@@ -155,6 +155,7 @@ exports.getStats = asyncHandler(async (req, res) => {
 
   return successResponse(res, 'Notification stats', {
     statusTotals: totals,
+    schedulerEnabled: process.env.ENABLE_NOTIFICATION_SCHEDULER === 'true' && process.env.ENABLE_SCHEDULERS !== 'false',
     deliveryRate,
     openRate,
     totalPushed:  agg.totalSent,
@@ -207,7 +208,8 @@ exports.updateNotification = asyncHandler(async (req, res) => {
     return errorResponse(res, `Cannot edit a notification with status "${notif.status}"`, 400);
   }
 
-  const ALLOWED = ['title', 'body', 'imageUrl', 'data', 'audience', 'scheduledAt', 'type', 'isTransactional'];
+  const originalStatus = notif.status;
+  const ALLOWED = ['title', 'body', 'imageUrl', 'data', 'audience', 'scheduledAt', 'type', 'isTransactional', 'template'];
   for (const key of ALLOWED) {
     if (req.body[key] !== undefined) notif[key] = req.body[key];
   }
@@ -219,8 +221,12 @@ exports.updateNotification = asyncHandler(async (req, res) => {
     notif.status = 'draft';
   }
 
-  await notif.save();
-  return successResponse(res, 'Notification updated', notif);
+  await notif.validate();
+  const changes = Object.fromEntries([...ALLOWED, 'status'].filter((key) => notif.isModified(key)).map((key) => [key, notif[key]]));
+  const updated = await Notification.findOneAndUpdate({ _id: notif._id, status: originalStatus, updatedAt: notif.updatedAt },
+    { $set: changes }, { new: true });
+  if (!updated) return errorResponse(res, 'Notification changed. Reload and try again.', 409);
+  return successResponse(res, 'Notification updated', updated);
 });
 
 /**
@@ -235,9 +241,10 @@ exports.cancelNotification = asyncHandler(async (req, res) => {
     return errorResponse(res, `Only scheduled notifications can be cancelled (current: ${notif.status})`, 400);
   }
 
-  notif.status = 'cancelled';
-  await notif.save();
-  return successResponse(res, 'Notification cancelled', notif);
+  const cancelled = await Notification.findOneAndUpdate({ _id: notif._id, status: 'scheduled' },
+    { $set: { status: 'cancelled' } }, { new: true });
+  if (!cancelled) return errorResponse(res, 'Notification changed. Reload and try again.', 409);
+  return successResponse(res, 'Notification cancelled', cancelled);
 });
 
 /**
@@ -272,12 +279,7 @@ exports.retryNotification = asyncHandler(async (req, res) => {
     return errorResponse(res, `Only failed notifications can be retried (current: ${notif.status})`, 400);
   }
 
-  // Reset to scheduled so the scheduler or manual send picks it up
-  notif.status = 'draft';
-  notif.errorMessage = null;
-  await notif.save();
-
-  notificationService.send(notif).catch(err => {
+  notificationService.send(notif, ['failed']).catch(err => {
     console.error('[AdminNotification] retry error:', err.message);
   });
 
@@ -290,7 +292,7 @@ exports.retryNotification = asyncHandler(async (req, res) => {
  */
 exports.getReceipts = asyncHandler(async (req, res) => {
   const page  = Math.max(1, parseInt(req.query.page)  || 1);
-  const limit = Math.min(100, parseInt(req.query.limit) || 50);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
   const skip  = (page - 1) * limit;
 
   const filter = { notification: req.params.id };
@@ -376,5 +378,5 @@ exports.deleteTemplate = asyncHandler(async (req, res) => {
     { new: true }
   );
   if (!template) return errorResponse(res, 'Template not found', 404);
-  return successResponse(res, 'Template deleted');
+  return successResponse(res, 'Template deactivated');
 });

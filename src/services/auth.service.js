@@ -274,29 +274,12 @@ const refreshAccessToken = async ({ refreshToken, userId }) => {
     throw new BadRequestError('Refresh token is required');
   }
 
-  let targetUserId = userId;
-  if (!targetUserId) {
-    try {
-      const decoded = jwt.decode(refreshToken);
-      if (decoded && decoded.id) targetUserId = decoded.id;
-    } catch (_) {}
+  if (typeof userId !== 'string' || !/^[a-f0-9]{24}$/i.test(userId)) {
+    throw new UnauthorizedError('Invalid or revoked refresh token');
   }
-
-  if (targetUserId) {
-    const isValid = await tokenService.verifyRefreshToken(targetUserId, refreshToken);
-    if (!isValid) {
-      throw new UnauthorizedError('Invalid or revoked refresh token');
-    }
-  }
-
-  const user = await User.findById(targetUserId);
-  if (!user || !user.isActive) {
-    throw new UnauthorizedError('User not found or account is deactivated');
-  }
-
-  // Revoke old refresh token (rotation)
-  if (targetUserId) {
-    await tokenService.revokeRefreshToken(targetUserId, refreshToken);
+  const user = await User.findById(userId);
+  if (!user || !user.isActive || !await tokenService.consumeRefreshToken(userId, refreshToken)) {
+    throw new UnauthorizedError('Invalid or revoked refresh token');
   }
 
   const tokens = await tokenService.generateTokenPair(user);

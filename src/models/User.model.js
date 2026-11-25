@@ -59,9 +59,11 @@ const userSchema = new mongoose.Schema(
     // Legacy single role field (backward-compat)
     role: {
       type: String,
-      enum: ['admin', 'owner', 'tenant', 'staff', 'property_manager'],
+      enum: ['admin', 'owner', 'tenant', 'staff', 'property_manager', 'pg_owner', 'meetup_organizer'],
       default: 'tenant',
     },
+
+    authTokensInvalidBefore: { type: Date, select: false },
 
     // Account state
     isActive: { type: Boolean, default: true },
@@ -134,15 +136,15 @@ function normalizeUserRoles(doc) {
 
   doc.roles = Array.from(new Set(roles));
 
-  // 6. Derive legacy role field (priority: admin > owner > pg_owner > property_manager > staff > tenant)
-  const ROLE_PRIORITY = ['admin', 'owner', 'pg_owner', 'property_manager', 'staff', 'tenant'];
-  for (const r of ROLE_PRIORITY) {
-    if (doc.roles.includes(r)) {
-      doc.role = r;
-      break;
-    }
-  }
+  doc.role = primaryRole(doc.roles);
 }
+
+function primaryRole(roles) {
+  return ['admin', 'owner', 'pg_owner', 'property_manager', 'staff', 'meetup_organizer', 'tenant']
+    .find((role) => roles.includes(role)) || 'tenant';
+}
+
+userSchema.statics.primaryRole = primaryRole;
 
 // ---- Mongoose Hooks ---------------------------------------------------------
 userSchema.post('init', function (doc) {
@@ -192,6 +194,7 @@ userSchema.methods.toSafeObject = function () {
   normalizeUserRoles(this);
   const obj = this.toObject();
   delete obj.password;
+  delete obj.authTokensInvalidBefore;
   return obj;
 };
 

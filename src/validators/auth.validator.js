@@ -34,7 +34,7 @@ const updateProfileSchema = z.object({
 const sendOtpSchema = z.object({
   email: z.string().email('Invalid email address'),
   purpose: z.enum(['register', 'login'], {
-    errorMap: () => ({ message: "Purpose must be 'register' or 'login'" }),
+    error: () => ({ message: "Purpose must be 'register' or 'login'" }),
   }),
 });
 
@@ -69,7 +69,7 @@ const createOwnerSchema = z.object({
 const sendOtpUnifiedSchema = z.object({
   contact: z.string().min(3, 'Contact must be at least 3 characters'),
   type: z.enum(['email', 'phone'], {
-    errorMap: () => ({ message: "Type must be 'email' or 'phone'" }),
+    error: () => ({ message: "Type must be 'email' or 'phone'" }),
   }),
   /**
    * When true (default), also deliver the OTP via WhatsApp for phone contacts.

@@ -111,7 +111,7 @@ const getAdminAnalytics = asyncHandler(async (req, res) => {
  * Admin queue across all categories
  */
 const getAdminProperties = asyncHandler(async (req, res) => {
-  const { properties, pagination } = await propertyApprovalService.getAllPropertiesForAdmin(req.query);
+  const { properties, ...pagination } = await propertyApprovalService.getAllPropertiesForAdmin(req.query);
   paginatedResponse(res, 'Admin property queue retrieved', properties, pagination);
 });
 
@@ -145,7 +145,7 @@ const requestCorrection = asyncHandler(async (req, res) => {
  * @route PUT /api/v1/admin/properties/:id/verify
  */
 const toggleVerify = asyncHandler(async (req, res) => {
-  const property = await propertyApprovalService.toggleVerify(req.params.id);
+  const property = await propertyApprovalService.toggleVerify(req.params.id, req.body?.isVerified);
   successResponse(res, `Property ${property.isVerified ? 'verified' : 'unverified'}`, { property });
 });
 

@@ -189,47 +189,6 @@ const removePG = asyncHandler(async (req, res) => {
 });
 
 /**
- * @route GET /api/v1/admin/users
- */
-const getAllUsers = asyncHandler(async (req, res) => {
-  const { role, page = 1, limit = 20 } = req.query;
-  const query = role ? { role } : { role: { $ne: 'admin' } };
-  const skip = (page - 1) * limit;
-
-  const [users, total] = await Promise.all([
-    User.find(query).sort({ createdAt: -1 }).skip(skip).limit(Number(limit)).lean(),
-    User.countDocuments(query),
-  ]);
-
-  successResponse(res, 'Users retrieved', { users, total, page: Number(page), totalPages: Math.ceil(total / limit) });
-});
-
-/**
- * @route PUT /api/v1/admin/users/:id/suspend
- */
-const suspendUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-  if (user.role === 'admin') return res.status(403).json({ success: false, message: 'Cannot suspend admin' });
-
-  user.isActive = !user.isActive;
-  await user.save();
-  successResponse(res, `User ${user.isActive ? 'activated' : 'suspended'}`, { user: user.toSafeObject() });
-});
-
-/**
- * @route DELETE /api/v1/admin/users/:id
- */
-const deleteUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (!user || user.role === 'admin') {
-    return res.status(403).json({ success: false, message: 'Cannot delete this user' });
-  }
-  await User.findByIdAndDelete(req.params.id);
-  successResponse(res, 'User deleted');
-});
-
-/**
  * @route GET /api/v1/admin/analytics
  */
 const getAnalytics = asyncHandler(async (req, res) => {
@@ -292,185 +251,6 @@ const getAnalytics = asyncHandler(async (req, res) => {
 });
 
 /**
- * @route POST /api/v1/admin/users
- */
-const createOwner = asyncHandler(async (req, res) => {
-  const { name, email, phone, password } = req.body;
-  const emailLower = email.toLowerCase().trim();
-
-  const existingUser = await User.findOne({ email: emailLower });
-  if (existingUser) {
-    return res.status(409).json({ success: false, message: 'User with this email already exists' });
-  }
-
-  const user = await User.create({
-    name,
-    email: emailLower,
-    phone: phone || undefined,
-    password,
-    role: 'owner',
-  });
-
-  successResponse(res, 'Owner created successfully', { user: user.toSafeObject() }, 201);
-});
-
-/**
- * @route PUT /api/v1/admin/users/:id
- */
-const updateUser = asyncHandler(async (req, res) => {
-  const { name, phone, role, roles } = req.body;
-  const User = require('../models/User.model');
-
-  const VALID_ROLES = [
-    'admin', 'owner', 'tenant',
-    'pg_owner', 'meetup_organizer',
-  ];
-
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found' });
-  }
-
-  if (name !== undefined) user.name = name;
-  if (phone !== undefined) {
-    if (phone) {
-      const existing = await User.findOne({ phone, _id: { $ne: req.params.id } });
-      if (existing) {
-        return res.status(409).json({ success: false, message: 'A user with this phone number already exists' });
-      }
-    }
-    user.phone = phone || undefined;
-  }
-
-  // Support setting a full roles array
-  if (roles !== undefined) {
-    if (!Array.isArray(roles)) {
-      return res.status(400).json({ success: false, message: 'roles must be an array' });
-    }
-    const invalidRoles = roles.filter((r) => !VALID_ROLES.includes(r));
-    if (invalidRoles.length > 0) {
-      return res.status(400).json({ success: false, message: `Invalid role(s): ${invalidRoles.join(', ')}` });
-    }
-    user.roles = roles.length > 0 ? roles : ['tenant'];
-  } else if (role !== undefined) {
-    // Legacy: single role update
-    if (!VALID_ROLES.includes(role)) {
-      return res.status(400).json({ success: false, message: 'Invalid role' });
-    }
-    // Add to roles if not already present
-    if (!user.roles) user.roles = [user.role || 'tenant'];
-    if (!user.roles.includes(role)) user.roles.push(role);
-    user.role = role;
-  }
-
-  await user.save();
-  successResponse(res, 'User updated successfully', { user: user.toSafeObject() });
-});
-
-/**
- * @route POST /api/v1/admin/users/:id/roles/:role
- * @desc  Add a specific role to a user
- */
-const addUserRole = asyncHandler(async (req, res) => {
-  const VALID_ROLES = [
-    'admin', 'owner', 'tenant',
-    'pg_owner', 'meetup_organizer',
-  ];
-  const { role } = req.params;
-
-  if (!VALID_ROLES.includes(role)) {
-    return res.status(400).json({ success: false, message: 'Invalid role' });
-  }
-
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-  if (user.roles && user.roles[0] === 'admin' && role !== 'admin') {
-    // Admin users keep admin as primary but can have other roles
-  }
-
-  if (!user.roles) user.roles = [user.role || 'tenant'];
-  if (!user.roles.includes(role)) {
-    user.roles.push(role);
-  }
-
-  await user.save();
-  successResponse(res, `Role '${role}' added successfully`, { user: user.toSafeObject() });
-});
-
-/**
- * @route DELETE /api/v1/admin/users/:id/roles/:role
- * @desc  Remove a specific role from a user
- */
-const removeUserRole = asyncHandler(async (req, res) => {
-  const { role } = req.params;
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-
-  if (role === 'admin' && user.role === 'admin') {
-    return res.status(403).json({ success: false, message: 'Cannot remove admin role from admin user' });
-  }
-
-  if (!user.roles) user.roles = [user.role || 'tenant'];
-  user.roles = user.roles.filter((r) => r !== role);
-  if (user.roles.length === 0) user.roles = ['tenant'];
-
-  await user.save();
-  successResponse(res, `Role '${role}' removed successfully`, { user: user.toSafeObject() });
-});
-
-/**
- * @route PUT /api/v1/admin/users/:id/roles
- * @desc  Set the complete roles array for a user
- */
-const setUserRoles = asyncHandler(async (req, res) => {
-  const VALID_ROLES = [
-    'admin', 'owner', 'tenant',
-    'pg_owner', 'meetup_organizer',
-  ];
-
-  const { roles } = req.body;
-  if (!Array.isArray(roles) || roles.length === 0) {
-    return res.status(400).json({ success: false, message: 'roles must be a non-empty array' });
-  }
-
-  const invalidRoles = roles.filter((r) => !VALID_ROLES.includes(r));
-  if (invalidRoles.length > 0) {
-    return res.status(400).json({ success: false, message: `Invalid role(s): ${invalidRoles.join(', ')}` });
-  }
-
-  const user = await User.findById(req.params.id);
-  if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-  if (user.role === 'admin' && !roles.includes('admin')) {
-    return res.status(403).json({ success: false, message: 'Cannot remove admin role from admin user via this endpoint' });
-  }
-
-  user.roles = roles;
-  await user.save();
-  successResponse(res, 'User roles updated successfully', { user: user.toSafeObject() });
-});
-
-/**
- * @route PUT /api/v1/admin/users/:id/reset-password
- */
-const resetPassword = asyncHandler(async (req, res) => {
-  const { password } = req.body;
-  if (!password || password.length < 6) {
-    return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
-  }
-
-  const User = require('../models/User.model');
-  const user = await User.findById(req.params.id);
-  if (!user) {
-    return res.status(404).json({ success: false, message: 'User not found' });
-  }
-
-  user.password = password;
-  await user.save();
-
-  successResponse(res, 'Password reset successfully', { user: user.toSafeObject() });
-});
-
-/**
  * @route PUT /api/v1/admin/pgs/:id
  * @desc  Admin direct edit for any PG listing
  */
@@ -516,4 +296,26 @@ const updatePGByAdmin = asyncHandler(async (req, res) => {
   successResponse(res, 'PG listing updated successfully by Admin', { pg: updatedPG });
 });
 
-module.exports = { getAllPGs, approvePG, rejectPG, toggleVerify, removePG, getAllUsers, suspendUser, deleteUser, getAnalytics, createOwner, updateUser, resetPassword, updatePGByAdmin, addUserRole, removeUserRole, setUserRoles };
+const getTrends = asyncHandler(async (req, res) => {
+  const days = Number(req.query.days ?? 30);
+  if (![7, 30, 90].includes(days)) return res.status(400).json({ success: false, message: 'Choose 7, 30, or 90 days' });
+  const dayMs = 86400000;
+  const offset = 19800000;
+  const today = Math.floor((Date.now() + offset) / dayMs) * dayMs - offset;
+  const since = new Date(today - (days - 1) * dayMs);
+  const until = new Date(today + dayMs);
+  const group = (model) => model.aggregate([
+    { $match: { createdAt: { $gte: since, $lt: until } } },
+    { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: 'Asia/Kolkata' } }, count: { $sum: 1 } } },
+  ]);
+  const [properties, leads, visits] = await Promise.all([group(Property), group(Lead), group(VisitRequest)]);
+  const byDate = (rows) => new Map(rows.map((row) => [row._id, row.count]));
+  const counts = [properties, leads, visits].map(byDate);
+  const points = Array.from({ length: days }, (_, index) => {
+    const date = new Date(since.getTime() + offset + index * dayMs).toISOString().slice(0, 10);
+    return { date, properties: counts[0].get(date) || 0, leads: counts[1].get(date) || 0, visits: counts[2].get(date) || 0 };
+  });
+  successResponse(res, 'Activity trends retrieved', { timezone: 'Asia/Kolkata', points });
+});
+
+module.exports = { getAllPGs, approvePG, rejectPG, toggleVerify, removePG, getAnalytics, getTrends, updatePGByAdmin };

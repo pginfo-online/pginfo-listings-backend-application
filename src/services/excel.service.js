@@ -13,7 +13,9 @@ const parseExportFilters = (params = {}) => {
 
   if (dataset === 'pgs') {
     const cleanStatus = typeof params.status === 'string' ? params.status.trim() : '';
-    if (cleanStatus && cleanStatus !== 'all') query.status = cleanStatus;
+    if (cleanStatus && cleanStatus !== 'all') {
+      query.status = cleanStatus === 'pending' ? { $in: ['pending', 'submitted', 'pending_review'] } : cleanStatus;
+    }
 
     const cleanCity = typeof params.city === 'string' ? params.city.trim() : '';
     if (cleanCity) query.city = new RegExp(escapeRegex(cleanCity), 'i');
@@ -26,6 +28,8 @@ const parseExportFilters = (params = {}) => {
 
     if (params.gender && params.gender !== 'any') query.gender = params.gender;
   } else if (dataset === 'users') {
+    query.roles = { $ne: 'admin' };
+    query.role = { $ne: 'admin' };
     if (params.role && params.role !== 'all') query.role = params.role;
     if (params.isSuspended !== undefined && params.isSuspended !== '') {
       query.isSuspended = params.isSuspended === 'true' || params.isSuspended === true;
@@ -35,6 +39,14 @@ const parseExportFilters = (params = {}) => {
     if (params.isRead !== undefined && params.isRead !== '') {
       query.isRead = params.isRead === 'true' || params.isRead === true;
     }
+  }
+
+  if (typeof params.search === 'string' && params.search.trim()) {
+    const search = new RegExp(escapeRegex(params.search.trim()), 'i');
+    const fields = dataset === 'users' ? ['name', 'email', 'phone']
+      : dataset === 'leads' ? ['message', 'contactName', 'contactPhone']
+      : ['title', 'city', 'area', 'address'];
+    query.$or = fields.map((field) => ({ [field]: search }));
   }
 
   // Common date range filter

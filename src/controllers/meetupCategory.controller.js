@@ -182,7 +182,7 @@ const updateCategory = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Validate parent change
-  if (parent !== undefined && parent !== null) {
+  if (parent) {
     if (parent.toString() === req.params.id) {
       return errorResponse(res, 'A category cannot be its own parent', 400);
     }
